@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /script.js
+
+Sitemap: https://shturl.cc/7E2mL0Hjtsyr/sitemap.xml

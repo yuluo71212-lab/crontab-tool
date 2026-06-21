@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>关于我们 - Crontab 表达式生成器</title>
+  <meta name="description" content="了解 Crontab 表达式生成器，一款完全免费的在线工具，帮助开发者快速生成 Linux 定时任务表达式，无需注册，开箱即用。">
+  <meta name="keywords" content="crontab 工具, 在线定时任务, 免费 crontab 生成器, 关于我们">
+  <meta name="robots" content="index, follow">
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF',
+            'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA',
+            'text-main': '#1D2129',
+            'text-secondary': '#4E5969',
+            'text-muted': '#86909C',
+          },
+          borderRadius: {
+            'card': '8px',
+            'btn': '6px',
+          },
+          boxShadow: {
+            'card': '0 2px 8px rgba(0,0,0,0.06)',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <!-- ========== 顶部导航 ========== -->
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[800px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="../index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">Crontab 表达式生成器</a>
+      <div class="flex gap-4 text-sm">
+        <a href="about.html" class="text-primary font-medium no-underline transition-btn">关于我们</a>
+        <a href="privacy.html" class="text-text-secondary no-underline hover:text-primary transition-btn">隐私政策</a>
+        <a href="contact.html" class="text-text-secondary no-underline hover:text-primary transition-btn">联系我们</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========== 主体区域 ========== -->
+  <main class="flex-1 max-w-[800px] mx-auto px-4 sm:px-4 md:px-0 w-full py-6 flex flex-col gap-4">
+
+    <section class="bg-white rounded-card shadow-card p-6">
+      <h1 class="text-xl font-bold text-text-main mb-4">关于我们</h1>
+
+      <div class="flex flex-col gap-4 text-sm leading-relaxed text-text-secondary">
+
+        <div>
+          <h2 class="text-base font-semibold text-text-main mb-2">欢迎使用 Crontab 表达式生成器</h2>
+          <p>本网站是一个<strong class="text-text-main">完全免费</strong>的在线 Crontab 表达式生成工具，旨在帮助开发者快速、准确地生成和解析 Linux/Unix 定时任务（Crontab）表达式。</p>
+        </div>
+
+        <div>
+          <h2 class="text-base font-semibold text-text-main mb-2">为什么选择我们？</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li><strong class="text-text-main">无需注册</strong> — 打开即用，无需创建账号或登录</li>
+            <li><strong class="text-text-main">开箱即用</strong> — 直观的可视化界面，无需查阅文档即可上手</li>
+            <li><strong class="text-text-main">完全免费</strong> — 所有功能永久免费，无隐藏收费</li>
+            <li><strong class="text-text-main">本地运行</strong> — 所有操作在您的浏览器中完成，保护您的隐私</li>
+            <li><strong class="text-text-main">专注高效</strong> — 专注于 Crontab 表达式这一个任务，做到极致简洁</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-base font-semibold text-text-main mb-2">主要功能</h2>
+          <ul class="list-disc list-inside space-y-1">
+            <li>可视化选择器：通过三种模式灵活选择每个时间字段的值</li>
+            <li>常用预设：一键生成常见的定时任务表达式</li>
+            <li>反向解析：输入已有表达式，查看其可读的中文解释</li>
+            <li>一键复制：快速复制生成的表达式到剪贴板</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 class="text-base font-semibold text-text-main mb-2">适用人群</h2>
+          <p>本工具面向<strong class="text-text-main">开发者、运维工程师、系统管理员</strong>以及任何需要使用 Crontab 定时任务的用户。无论您是 Linux 新手还是资深 DevOps 工程师，都能在这里快速获得正确的 Crontab 表达式。</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== 底部页脚 ========== -->
+  <footer id="site-footer" class="text-center py-6 text-sm text-text-muted border-0 border-t border-solid border-gray-200">
+    <p>&copy; 2026 Crontab Tool 免费在线工具</p>
+  </footer>
+
+  <script src="../script.js"></script>
+</body>
+</html>
