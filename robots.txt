@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yuluo71212-lab.github.io/crontab-tool/sitemap.xml
+Sitemap: https://cronbox.top/sitemap.xml

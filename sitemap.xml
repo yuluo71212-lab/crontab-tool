@@ -6,126 +6,126 @@
   <!-- 首页                                                        -->
   <!-- ============================================================ -->
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/</loc>
+    <loc>https://cronbox.top/</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/" />
   </url>
 
   <!-- ============================================================ -->
   <!-- 工具页面                                                     -->
   <!-- ============================================================ -->
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/json-formatter.html</loc>
+    <loc>https://cronbox.top/json-formatter.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/json-formatter.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/json-formatter.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/json-formatter.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/json-formatter.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/base64.html</loc>
+    <loc>https://cronbox.top/base64.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/base64.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/base64.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/base64.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/base64.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/url.html</loc>
+    <loc>https://cronbox.top/url.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/url.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/url.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/url.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/url.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/md5.html</loc>
+    <loc>https://cronbox.top/md5.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/md5.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/md5.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/md5.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/md5.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/yaml.html</loc>
+    <loc>https://cronbox.top/yaml.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/yaml.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/yaml.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/yaml.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/yaml.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/xml.html</loc>
+    <loc>https://cronbox.top/xml.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/xml.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/xml.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/xml.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/xml.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/sql.html</loc>
+    <loc>https://cronbox.top/sql.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/sql.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/sql.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/sql.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/sql.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/regex.html</loc>
+    <loc>https://cronbox.top/regex.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/regex.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/regex.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/regex.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/regex.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/diff.html</loc>
+    <loc>https://cronbox.top/diff.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/diff.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/diff.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/diff.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/diff.html" />
   </url>
 
   <!-- ============================================================ -->
   <!-- 信息页面                                                     -->
   <!-- ============================================================ -->
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/pages/about.html</loc>
+    <loc>https://cronbox.top/pages/about.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/pages/about.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/pages/about.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/about.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/about.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/pages/privacy.html</loc>
+    <loc>https://cronbox.top/pages/privacy.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/pages/privacy.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/pages/privacy.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/privacy.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/privacy.html" />
   </url>
 
   <url>
-    <loc>https://yuluo71212-lab.github.io/crontab-tool/pages/contact.html</loc>
+    <loc>https://cronbox.top/pages/contact.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://yuluo71212-lab.github.io/crontab-tool/pages/contact.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://yuluo71212-lab.github.io/crontab-tool/pages/contact.html" />
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/contact.html" />
+    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/contact.html" />
   </url>
 
 </urlset>
