@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="url.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL 在线编解码工具 - 网址编码解码</title>
+  <meta name="description" content="免费在线 URL 编解码工具，支持中文、特殊字符的 encodeURIComponent 编码与解码，一键互换输入输出，无需注册开箱即用。">
+  <meta name="keywords" content="URL 编码, URL 解码, encodeURIComponent, decodeURIComponent, 网址编码, 百分号编码">
+  <meta name="robots" content="index, follow">
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF',
+            'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA',
+            'text-main': '#1D2129',
+            'text-secondary': '#4E5969',
+            'text-muted': '#86909C',
+            'success': '#00B42A',
+            'error':   '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-url {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    #output-area::-webkit-scrollbar,
+    #input-area::-webkit-scrollbar { width: 6px; height: 6px; }
+    #output-area::-webkit-scrollbar-thumb,
+    #input-area::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #output-area::-webkit-scrollbar-track,
+    #input-area::-webkit-scrollbar-track  { background: transparent; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <!-- ========== 顶部导航 ========== -->
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========== 主体区域 ========== -->
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <!-- 标题 + 工具栏 -->
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="url.title">URL 在线编解码工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="url.subtitle">支持中文 / 特殊字符 / 完整 URL — 一键编码解码，快速互换</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-encode"  class="min-w-[72px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="url.btn_encode">编码</button>
+          <button id="btn-decode"  class="min-w-[72px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="url.btn_decode">解码</button>
+          <button id="btn-swap"    class="min-w-[64px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_swap">互换</button>
+          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_clear">清空</button>
+          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_copy">复制结果</button>
+        </div>
+      </div>
+
+      <!-- 状态提示 -->
+      <div id="status-bar" class="flex items-center gap-2 text-sm min-h-[28px]">
+        <span class="text-text-muted" data-i18n="url.status_placeholder">请输入文本或 URL 编码字符串</span>
+      </div>
+    </section>
+
+    <!-- 输入 / 输出 分栏 -->
+    <section class="flex flex-col md:flex-row gap-4 flex-1 min-h-[500px]">
+      <!-- 输入框 -->
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="url.input_label">输入</h2>
+          <span class="text-xs text-text-muted" data-i18n="url.input_hint">粘贴文本到此处</span>
+        </div>
+        <textarea id="input-area"
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-url text-text-main
+                 focus:outline-none focus:border-primary transition-btn
+                 placeholder:text-text-muted"
+          placeholder="输入要编码的文本，或要解码的 URL 编码字符串..."
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+
+      <!-- 输出框 -->
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="url.output_label">结果</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="url.status_waiting">等待操作…</span>
+        </div>
+        <textarea id="output-area" readonly
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-url text-text-main
+                 bg-gray-50 focus:outline-none min-h-[200px]
+                 placeholder:text-text-muted"
+          placeholder="编码或解码结果将显示在这里..."></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== 底部页脚 ========== -->
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var t = window.t;
+
+    // 状态缓存，用于 langchange 时重新渲染
+    var lastStatusType = 'info';
+    var lastStatusMsg  = '';
+
+    document.addEventListener('langchange', function () { updateStats(); renderStatus(); });
+
+    // ============================================================
+    // DOM 引用
+    // ============================================================
+    var inputArea   = document.getElementById('input-area');
+    var outputArea  = document.getElementById('output-area');
+    var statusBar   = document.getElementById('status-bar');
+    var inputStats  = document.getElementById('input-stats');
+    var outputStats = document.getElementById('output-stats');
+    var outputLabel = document.getElementById('output-label');
+    var btnEncode   = document.getElementById('btn-encode');
+    var btnDecode   = document.getElementById('btn-decode');
+    var btnSwap     = document.getElementById('btn-swap');
+    var btnClear    = document.getElementById('btn-clear');
+    var btnCopy     = document.getElementById('btn-copy');
+
+    // ============================================================
+    // localStorage 持久化
+    // ============================================================
+    var STORAGE_KEY = 'url_input';
+
+    function loadInput() {
+      try {
+        var saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) { inputArea.value = saved; updateInputStats(); }
+      } catch(e) {}
+    }
+    function saveInput(val) {
+      try { localStorage.setItem(STORAGE_KEY, val); } catch(e) {}
+    }
+
+    // ============================================================
+    // 统计更新
+    // ============================================================
+    function updateInputStats() {
+      var val = inputArea.value;
+      var chars = val.length;
+      var lines = chars === 0 ? 1 : val.split('\n').length;
+      inputStats.textContent = t('url.stats_format', { chars: chars, lines: lines });
+    }
+
+    function updateOutputStats(text) {
+      var txt = text || '';
+      var chars = txt.length;
+      var lines = chars === 0 ? 1 : txt.split('\n').length;
+      outputStats.textContent = t('url.stats_format', { chars: chars, lines: lines });
+    }
+
+    function updateStats() {
+      updateInputStats();
+      updateOutputStats(outputArea.value);
+    }
+
+    // ============================================================
+    // URL 编解码核心
+    // ============================================================
+    function encodeURL(str) {
+      return encodeURIComponent(str);
+    }
+
+    function decodeURL(str) {
+      try {
+        return decodeURIComponent(str);
+      } catch (e) {
+        if (e instanceof URIError) {
+          throw new Error(t('url.err_decode'));
+        }
+        throw new Error(t('url.status_decode_fail') + ': ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // 编码操作
+    // ============================================================
+    function doEncode() {
+      var input = inputArea.value;
+      if (!input) {
+        showStatus('warning', t('url.status_empty_input'));
+        return;
+      }
+
+      var result = encodeURL(input);
+      outputArea.value = result;
+      outputLabel.innerHTML = '<span class="text-success">' + t('url.status_encode_ok') + '</span>';
+      updateOutputStats(result);
+      showStatus('success', t('url.msg_encode_ok'));
+    }
+
+    // ============================================================
+    // 解码操作
+    // ============================================================
+    function doDecode() {
+      var input = inputArea.value.trim();
+      if (!input) {
+        showStatus('warning', t('url.status_empty_decode'));
+        return;
+      }
+
+      try {
+        var result = decodeURL(input);
+        outputArea.value = result;
+        outputLabel.innerHTML = '<span class="text-success">' + t('url.status_decode_ok') + '</span>';
+        updateOutputStats(result);
+        showStatus('success', t('url.msg_decode_ok'));
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-error">' + t('url.status_decode_fail') + '</span>';
+        updateOutputStats('');
+        showStatus('error', e.message);
+      }
+    }
+
+    // ============================================================
+    // 互换输入输出
+    // ============================================================
+    function doSwap() {
+      var inputVal = inputArea.value;
+      var outputVal = outputArea.value;
+
+      if (!outputVal) {
+        showStatus('warning', t('url.status_empty_swap'));
+        return;
+      }
+
+      inputArea.value = outputVal;
+      outputArea.value = '';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + t('url.status_swapped') + '</span>';
+      updateInputStats();
+      updateOutputStats('');
+      saveInput(outputVal);
+      showStatus('info', t('url.msg_swap_ok'));
+      setActiveButton(btnEncode, btnDecode);
+    }
+
+    // ============================================================
+    // 清空
+    // ============================================================
+    function doClear() {
+      inputArea.value = '';
+      outputArea.value = '';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + t('url.status_waiting') + '</span>';
+      updateInputStats();
+      updateOutputStats('');
+      saveInput('');
+      showStatus('info', t('url.msg_cleared'));
+      setActiveButton(btnEncode, btnDecode);
+    }
+
+    // ============================================================
+    // 复制结果
+    // ============================================================
+    function doCopy() {
+      var outputVal = outputArea.value;
+      if (!outputVal) {
+        showStatus('warning', t('url.msg_empty_output'));
+        return;
+      }
+
+      var done = function () {
+        var originalText = btnCopy.textContent;
+        btnCopy.textContent = t('url.copy_done');
+        btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+        setTimeout(function () {
+          btnCopy.textContent = originalText;
+          btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+        }, 1200);
+        showStatus('success', t('url.msg_copied'));
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(outputVal).then(done).catch(function () {
+          fallbackCopy(outputVal, done);
+        });
+      } else {
+        fallbackCopy(outputVal, done);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); if (callback) callback(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    // ============================================================
+    // 状态提示
+    // ============================================================
+    function showStatus(type, message) {
+      lastStatusType = type;
+      lastStatusMsg  = message;
+      renderStatus();
+    }
+
+    function renderStatus() {
+      var icon = '';
+      var colorClass = '';
+      switch (lastStatusType) {
+        case 'success':
+          icon = '✅';
+          colorClass = 'text-success';
+          break;
+        case 'error':
+          icon = '❌';
+          colorClass = 'text-error';
+          break;
+        case 'warning':
+          icon = '⚠️';
+          colorClass = 'text-[#FF7D00]';
+          break;
+        case 'info':
+        default:
+          icon = 'ℹ️';
+          colorClass = 'text-text-muted';
+          break;
+      }
+      statusBar.innerHTML = '<span class="inline-flex items-center gap-1 ' + colorClass + ' text-sm font-medium">' +
+        icon + ' ' + escapeHTML(lastStatusMsg) +
+        '</span>';
+    }
+
+    // ============================================================
+    // 按钮切换
+    // ============================================================
+    function setActiveButton(activeBtn, inactiveBtn) {
+      // Active → filled blue
+      activeBtn.classList.add('bg-primary', 'text-white', 'border-none');
+      activeBtn.classList.remove('border', 'border-primary', 'text-primary', 'bg-white');
+      // Inactive → outlined blue
+      inactiveBtn.classList.remove('bg-primary', 'text-white', 'border-none');
+      inactiveBtn.classList.add('border', 'border-primary', 'text-primary', 'bg-white');
+    }
+
+    // ============================================================
+    // 工具函数
+    // ============================================================
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
+    // 事件绑定
+    // ============================================================
+    function init() {
+      // 初始化状态缓存
+      lastStatusMsg = t('url.status_placeholder');
+
+      loadInput();
+
+      // 输入框变化时保存到 localStorage
+      inputArea.addEventListener('input', function () {
+        updateInputStats();
+        saveInput(inputArea.value);
+      });
+
+      // 按钮事件
+      btnEncode.addEventListener('click', function () {
+        doEncode();
+        setActiveButton(btnEncode, btnDecode);
+      });
+      btnDecode.addEventListener('click', function () {
+        doDecode();
+        setActiveButton(btnDecode, btnEncode);
+      });
+      btnSwap.addEventListener('click', doSwap);
+      btnClear.addEventListener('click', doClear);
+      btnCopy.addEventListener('click', doCopy);
+
+      // 键盘快捷键 Ctrl+Enter = 编码
+      inputArea.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          doEncode();
+          setActiveButton(btnEncode, btnDecode);
+        }
+      });
+
+      // 初始状态
+      updateInputStats();
+      updateOutputStats('');
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+
+</body>
+</html>

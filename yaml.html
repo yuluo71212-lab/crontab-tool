@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="yaml.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YAML 在线格式化转换工具 - 转JSON/双向互转</title>
+  <meta name="description" content="免费在线 YAML 格式化转换工具，支持 YAML 美化、YAML 转 JSON、JSON 转 YAML，语法错误检测与中文提示，适配 DevOps 运维配置调试场景。">
+  <meta name="keywords" content="YAML 格式化, YAML 转 JSON, JSON 转 YAML, YAML 校验, YAML 在线工具">
+  <meta name="robots" content="index, follow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF', 'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA', 'text-main': '#1D2129',
+            'text-secondary': '#4E5969', 'text-muted': '#86909C',
+            'success': '#00B42A', 'error': '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-yaml {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 13px; line-height: 1.7;
+    }
+    #output-area::-webkit-scrollbar, #input-area::-webkit-scrollbar { width: 6px; height: 6px; }
+    #output-area::-webkit-scrollbar-thumb, #input-area::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #output-area::-webkit-scrollbar-track, #input-area::-webkit-scrollbar-track  { background: transparent; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <!-- 标题 + 工具栏 -->
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="yaml.title">YAML 在线格式化转换工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="yaml.subtitle">YAML 美化 / 转 JSON / JSON 转 YAML — 适配 DevOps 配置调试场景</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-format"    class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="yaml.btn_format">格式化</button>
+          <button id="btn-yaml2json" class="min-w-[100px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="yaml.btn_y2j">YAML→JSON</button>
+          <button id="btn-json2yaml" class="min-w-[100px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="yaml.btn_j2y">JSON→YAML</button>
+          <button id="btn-clear"     class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="yaml.btn_clear">清空</button>
+          <button id="btn-copy"      class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="yaml.btn_copy">复制结果</button>
+        </div>
+      </div>
+
+      <div id="status-bar" class="flex items-center gap-2 text-sm min-h-[28px]">
+        <span class="text-text-muted" data-i18n="yaml.status_placeholder">请输入 YAML 或 JSON 文本</span>
+      </div>
+    </section>
+
+    <!-- 输入 / 输出 分栏 -->
+    <section class="flex flex-col md:flex-row gap-4 flex-1 min-h-[500px]">
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="yaml.input_label">输入</h2>
+          <span class="text-xs text-text-muted" data-i18n="yaml.input_hint">YAML / JSON</span>
+        </div>
+        <textarea id="input-area"
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-yaml text-text-main
+                 focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted"
+          data-i18n-placeholder="yaml.input_placeholder" placeholder="在此输入 YAML 或 JSON 文本..."
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="yaml.output_label">结果</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="yaml.status_waiting">等待操作…</span>
+        </div>
+        <textarea id="output-area" readonly
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-yaml text-text-main
+                 bg-gray-50 focus:outline-none min-h-[200px] placeholder:text-text-muted"
+          data-i18n-placeholder="yaml.output_placeholder" placeholder="格式化或转换结果将显示在这里..."></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var t = window.t;
+    document.addEventListener('langchange', function () { refreshDynamicText(); });
+
+    // ============================================================
+    // YAML Parser — 纯 JS 实现
+    // ============================================================
+
+    // 逐行分类
+    function classifyLine(line) {
+      var trimmed = line.trimRight();
+      if (trimmed === '' || /^\s*#/.test(trimmed)) return { type: 'skip' };
+      var indent = line.length - line.trimLeft().length;
+
+      // Flow 内联对象/数组
+      if (/^\s*[\{\[]/.test(trimmed) && !/:\s/.test(trimmed)) {
+        try { var v = JSON.parse(trimmed); return { type: 'flow', indent: indent, value: v }; } catch(e) {}
+      }
+
+      // 多行字符串延续
+      if (/^\S/.test(trimmed) && !/^[-:\{]/.test(trimmed) && !/^\w+\s*:/.test(trimmed)) {
+        return { type: 'multiline-cont', indent: indent, value: trimmed };
+      }
+
+      // 数组项
+      if (/^\s*-\s/.test(line)) {
+        var after = trimmed.substring(1).trim();
+        var kv = parseKV(after);
+        return { type: 'array-item', indent: indent, key: kv.key, value: kv.value, hasColon: kv.hasColon };
+      }
+
+      // 键值对
+      var kv2 = parseKV(trimmed);
+      return { type: 'key-value', indent: indent, key: kv2.key, value: kv2.value, hasColon: kv2.hasColon };
+    }
+
+    function parseKV(str) {
+      // 处理引号 key
+      var key = '', value = '', hasColon = false;
+      var i = 0;
+
+      if (str.length > 0 && (str[0] === '"' || str[0] === "'")) {
+        var quote = str[0];
+        i = 1;
+        while (i < str.length) {
+          if (str[i] === '\\') { i += 2; continue; }
+          if (str[i] === quote) { i++; break; }
+          i++;
+        }
+        key = str.substring(0, i);
+        // 去除引号
+        key = unquote(key);
+      } else {
+        var colonIdx = str.indexOf(':');
+        if (colonIdx === -1) { key = str; return { key: key, value: '', hasColon: false }; }
+        key = str.substring(0, colonIdx).trim();
+        i = colonIdx;
+      }
+
+      if (i < str.length && str[i] === ':') {
+        hasColon = true;
+        i++;
+        // 跳过冒号后的空格
+        while (i < str.length && str[i] === ' ') i++;
+        value = str.substring(i).trim();
+      } else if (!key) {
+        key = str;
+      }
+
+      return { key: key, value: value, hasColon: hasColon };
+    }
+
+    function unquote(str) {
+      if (str.length < 2) return str;
+      var first = str[0], last = str[str.length - 1];
+      if ((first === '"' && last === '"') || (first === "'" && last === "'")) {
+        var inner = str.substring(1, str.length - 1);
+        if (first === '"') {
+          return inner.replace(/\\(.)/g, function (m, c) {
+            var escapes = { 'n': '\n', 't': '\t', 'r': '\r', '\\': '\\', '"': '"', "'": "'" };
+            return escapes[c] || c;
+          });
+        }
+        return inner; // 单引号不处理转义
+      }
+      return str;
+    }
+
+    function resolveScalar(val) {
+      if (val === '~' || val === 'null' || val === '') return null;
+      if (val === 'true' || val === 'True' || val === 'TRUE') return true;
+      if (val === 'false' || val === 'False' || val === 'FALSE') return false;
+      if (val === '.inf' || val === '.Inf' || val === '.INF') return Infinity;
+      if (val === '-.inf' || val === '-.Inf' || val === '-.INF') return -Infinity;
+      if (val === '.nan' || val === '.NaN' || val === '.NAN') return NaN;
+      if (/^0o[0-7]+$/i.test(val)) return parseInt(val.substring(2), 8);
+      if (/^0x[0-9a-fA-F]+$/.test(val)) return parseInt(val.substring(2), 16);
+      if (/^[-+]?\d+$/.test(val)) return parseInt(val, 10);
+      if (/^[-+]?\d+\.\d+$/.test(val)) return parseFloat(val);
+      if (/^[-+]?\d+(\.\d+)?[eE][-+]?\d+$/.test(val)) return parseFloat(val);
+      return val;
+    }
+
+    // 处理多行字符串
+    function handleMultiline(blockLines) {
+      if (blockLines.length === 0) return '';
+      var first = blockLines[0];
+      var chomping = 'clip';
+      var isFolded = false;
+
+      if (first === '|' || first === '>' || first === '|-' || first === '>-' || first === '|+' || first === '>+') {
+        isFolded = first[0] === '>';
+        chomping = first.length > 1 ? (first[1] === '+' ? 'keep' : 'strip') : 'clip';
+        blockLines = blockLines.slice(1);
+      }
+
+      var baseIndent = Infinity;
+      for (var i = 0; i < blockLines.length; i++) {
+        var leading = blockLines[i].length - blockLines[i].trimLeft().length;
+        if (blockLines[i].trim() !== '') baseIndent = Math.min(baseIndent, leading);
+      }
+      if (!isFinite(baseIndent)) baseIndent = 0;
+
+      var result = [];
+      for (var j = 0; j < blockLines.length; j++) {
+        result.push(blockLines[j].substring(baseIndent) || '');
+      }
+
+      var text = isFolded ? result.join(' ') : result.join('\n');
+
+      if (chomping === 'strip') text = text.replace(/\n+$/, '');
+      else if (chomping === 'keep') text = text + '\n';
+      else text = text.replace(/\n$/, '');
+
+      return text;
+    }
+
+    // 核心解析函数
+    function parseYAML(text) {
+      var lines = text.split('\n');
+      var entries = [];
+      var multilineBuf = null;
+      var multilineIndent = 0;
+      var multilineStart = 0;
+
+      for (var i = 0; i < lines.length; i++) {
+        var raw = lines[i];
+        var trimmed = raw.trimRight();
+        var indent = raw.length - raw.trimLeft().length;
+
+        // 处理多行字符串块
+        if (multilineBuf !== null) {
+          var isChompIndicator = /^\s*[|>][-+]?\s*$/.test(raw) || /^\s*[|>][-+]?\s*#/.test(raw);
+          if (isChompIndicator && multilineBuf.length === 0) {
+            // 这是块指示符行本身
+            multilineBuf.push(trimmed);
+            continue;
+          }
+          if (trimmed === '' || indent > multilineIndent) {
+            multilineBuf.push(raw);
+            continue;
+          }
+          // 块结束
+          var mlResult = handleMultiline(multilineBuf);
+          entries.push({
+            type: 'multiline', indent: multilineIndent,
+            startLine: multilineStart + 1, value: mlResult
+          });
+          multilineBuf = null;
+        }
+
+        if (trimmed === '' || /^\s*#/.test(trimmed)) continue;
+
+        // 检测 | 或 > 多行字符串块起始
+        var colonIdx = trimmed.indexOf(':');
+        if (colonIdx > 0) {
+          var afterColon = trimmed.substring(colonIdx + 1).trim();
+          var mlMatch = afterColon.match(/^[|>][-+]?(\s*#.*)?$/);
+          if (mlMatch) {
+            var entry = classifyLine(raw);
+            multilineBuf = [mlMatch[0].replace(/#.*$/, '').trim()];
+            multilineIndent = indent + 2;
+            multilineStart = i;
+            entries.push({ type: 'key-only', indent: indent, key: entry.key, startLine: i + 1 });
+            continue;
+          }
+        }
+
+        var entry = classifyLine(raw);
+        if (entry.type === 'skip') continue;
+        entry.startLine = i + 1;
+        entries.push(entry);
+
+        // 特殊处理 key: 后面有值的情况（单行）
+        if (entry.type === 'key-value' && entry.hasColon && entry.value !== '' && entry.value !== 'null') {
+          // 检查 value 是否是 flow 对象/数组
+          var v = entry.value;
+          if ((v[0] === '{' || v[0] === '[')) {
+            try { entry.value = JSON.parse(v); entry.isFlow = true; } catch(e) {}
+          }
+        }
+      }
+
+      // 处理剩余的 multiline buffer
+      if (multilineBuf !== null) {
+        var mlResult2 = handleMultiline(multilineBuf);
+        entries.push({
+          type: 'multiline', indent: multilineIndent,
+          startLine: multilineStart + 1, value: mlResult2
+        });
+      }
+
+      // 构建 AST
+      return buildAST(entries);
+    }
+
+    function buildAST(entries) {
+      if (entries.length === 0) return null;
+
+      var stack = [{ indent: -2, node: null, key: null }]; // root
+      var root = null;
+
+      for (var i = 0; i < entries.length; i++) {
+        var e = entries[i];
+
+        // 找到合适的父级
+        while (stack.length > 1 && e.indent <= stack[stack.length - 1].indent) {
+          stack.pop();
+        }
+
+        var parent = stack[stack.length - 1];
+
+        if (e.type === 'array-item') {
+          // 确保父节点是数组
+          if (!Array.isArray(parent.node)) {
+            // 但如果父节点是对象的某个 key，需要创建该 key 对应的数组
+            if (parent.key !== null && parent.node !== null) {
+              parent.node[parent.key] = [];
+              parent = { indent: parent.indent, node: parent.node[parent.key], key: null, parentIsArr: true };
+              stack[stack.length - 1] = parent;
+            }
+          }
+
+          if (e.hasColon && e.value !== '') {
+            // 数组项是对象: - key: value
+            var obj = {};
+            obj[e.key] = resolveScalar(e.value);
+            if (Array.isArray(parent.node)) {
+              parent.node.push(obj);
+            } else if (parent.node === null && root === null) {
+              root = [obj];
+            } else if (parent.node === null) {
+              parent.node = [obj];
+            } else {
+              parent.node.push(obj);
+            }
+            // 将此对象推入栈
+            stack.push({ indent: e.indent, node: obj, key: null });
+            // 检查下一个 entry 是否是 key-value 且 indent > e.indent（嵌套在此对象下）
+          } else if (e.value && !e.hasColon) {
+            // 简单数组值: - value
+            var resolved = resolveScalar(e.value);
+            if (Array.isArray(parent.node)) {
+              parent.node.push(resolved);
+            } else {
+              var arr2 = [resolved];
+              if (parent.node === null && root === null) {
+                root = arr2;
+              } else if (parent.node === null) {
+                parent.node = arr2;
+              }
+              if (!Array.isArray(parent.node) && parent.node === arr2) {
+                // nop
+              }
+            }
+            if (root === null && parent.node && Array.isArray(parent.node)) root = parent.node;
+          } else {
+            // 仅 - key（无值），可能是对象数组的开始
+            var obj2 = {};
+            if (Array.isArray(parent.node)) {
+              parent.node.push(obj2);
+            } else {
+              var arr3 = [obj2];
+              if (root === null) root = arr3;
+              if (parent.node !== null && typeof parent.node === 'object' && parent.key) {
+                parent.node[parent.key] = arr3;
+              } else if (parent.node === null && root === null) {
+                root = arr3;
+              }
+            }
+            stack.push({ indent: e.indent, node: obj2, key: null });
+          }
+          if (root === null && parent.node) root = parent.node;
+
+        } else if (e.type === 'flow') {
+          // Flow 值
+          if (parent.key !== null && parent.node !== null && typeof parent.node === 'object' && !Array.isArray(parent.node)) {
+            parent.node[parent.key] = e.value;
+          } else if (Array.isArray(parent.node)) {
+            parent.node.push(e.value);
+          } else if (root === null) {
+            root = e.value;
+          }
+        } else if (e.type === 'key-value' || e.type === 'key-only') {
+          if (parent.node === null) {
+            parent.node = {};
+            if (root === null) root = parent.node;
+          }
+
+          if (typeof parent.node === 'object' && !Array.isArray(parent.node)) {
+            if (e.hasColon && e.value !== '') {
+              // 有值
+              var resolved = resolveScalar(e.value);
+              parent.node[e.key] = resolved;
+            } else if (e.hasColon && e.value === '') {
+              // key: 后面为空，可能是嵌套对象的开始
+              parent.node[e.key] = {};
+              stack.push({ indent: e.indent, node: parent.node[e.key], key: e.key });
+            } else {
+              // 没有冒号（不太可能）
+              parent.node[e.key] = null;
+            }
+          } else if (Array.isArray(parent.node)) {
+            var lastItem = parent.node[parent.node.length - 1];
+            if (typeof lastItem === 'object' && lastItem !== null) {
+              if (e.hasColon && e.value !== '') {
+                lastItem[e.key] = resolveScalar(e.value);
+              } else {
+                lastItem[e.key] = {};
+                stack.push({ indent: e.indent, node: lastItem[e.key], key: e.key });
+              }
+            }
+          }
+        } else if (e.type === 'multiline') {
+          // 多行字符串值——需要与上一个 key-only entry 关联
+          var prevEntry = null;
+          for (var k = stack.length - 1; k >= 0; k--) {
+            if (stack[k].lastKey) { prevEntry = stack[k]; break; }
+          }
+          // 实际上，将 multiline 值赋给最近的 key-only
+          if (parent.lastKey) {
+            parent.node[parent.lastKey] = e.value;
+            parent.lastKey = null;
+          }
+        }
+      }
+
+      // 后处理：将 multiline 值绑定到最近的无值 key
+      for (var m = 0; m < entries.length; m++) {
+        if (entries[m].type === 'multiline') {
+          // 向前查找最近的 key-only entry
+          for (var n = m - 1; n >= 0; n--) {
+            if (entries[n].type === 'key-only' && entries[n].indent <= entries[m].indent) {
+              entries[n]._multilineValue = entries[m].value;
+              break;
+            }
+            if (entries[n].type === 'key-value' || entries[n].type === 'array-item') break;
+          }
+        }
+      }
+
+      // 重新构建（处理 multiline）
+      return buildASTWithMultiline(entries);
+    }
+
+    function buildASTWithMultiline(entries) {
+      if (entries.length === 0) return null;
+
+      var stack = [{ indent: -2, node: null, key: null }];
+      var root = null;
+
+      function getParent() { return stack[stack.length - 1]; }
+
+      // 简化重建：合并 key-only 和其 multiline 值
+      var merged = [];
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].type === 'key-only' && entries[i]._multilineValue) {
+          merged.push({
+            type: 'key-value', indent: entries[i].indent,
+            key: entries[i].key, value: entries[i]._multilineValue, hasColon: true,
+            startLine: entries[i].startLine
+          });
+        } else if (entries[i].type !== 'multiline') {
+          merged.push(entries[i]);
+        }
+      }
+
+      for (var j = 0; j < merged.length; j++) {
+        var e = merged[j];
+
+        while (stack.length > 1 && e.indent <= stack[stack.length - 1].indent) {
+          stack.pop();
+        }
+
+        var parent = getParent();
+
+        if (e.type === 'array-item') {
+          var arr;
+          if (Array.isArray(parent.node)) {
+            arr = parent.node;
+          } else if (parent.node === null && root === null) {
+            arr = []; root = arr; parent.node = arr;
+          } else if (parent.key && typeof parent.node === 'object' && !Array.isArray(parent.node)) {
+            arr = []; parent.node[parent.key] = arr; parent.node = arr;
+          } else {
+            arr = []; root = arr; parent.node = arr;
+          }
+
+          if (e.hasColon) {
+            var item = {};
+            item[e.key] = resolveScalar(e.value);
+            arr.push(item);
+            stack.push({ indent: e.indent, node: item, key: null });
+          } else {
+            arr.push(resolveScalar(e.value || e.key));
+          }
+        } else if (e.type === 'flow') {
+          if (Array.isArray(parent.node)) {
+            parent.node.push(e.value);
+          } else if (parent.key && typeof parent.node === 'object') {
+            parent.node[parent.key] = e.value;
+          } else if (root === null) {
+            root = e.value;
+          }
+        } else if (e.type === 'key-value') {
+          if (parent.node === null || (root === null && parent.node === null)) {
+            parent.node = {}; if (root === null) root = parent.node;
+          }
+          if (Array.isArray(parent.node)) {
+            var last = parent.node[parent.node.length - 1];
+            if (typeof last === 'object' && last !== null) {
+              last[e.key] = resolveScalar(e.value);
+            } else {
+              var obj = {}; obj[e.key] = resolveScalar(e.value);
+              parent.node.push(obj);
+            }
+          } else if (typeof parent.node === 'object') {
+            parent.node[e.key] = resolveScalar(e.value);
+          }
+        }
+      }
+
+      return root;
+    }
+
+    // ============================================================
+    // YAML 格式化（将对象重新序列化为格式良好的 YAML）
+    // ============================================================
+    function objToYAML(obj, indent, depth, isArrayItem) {
+      indent = indent || 0;
+      depth = depth || 0;
+      var prefix = isArrayItem ? spaces(indent - 2) + '- ' : spaces(indent);
+      var childIndent = isArrayItem ? indent : indent + 2;
+
+      if (obj === null || obj === undefined) return prefix + 'null';
+      if (typeof obj === 'string') return prefix + yamlString(obj);
+      if (typeof obj === 'number') return prefix + String(obj);
+      if (typeof obj === 'boolean') return prefix + String(obj);
+
+      if (Array.isArray(obj)) {
+        if (obj.length === 0) return prefix + '[]';
+        var lines = [];
+        for (var i = 0; i < obj.length; i++) {
+          var item = obj[i];
+          if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+            // 对象数组：第一项前不加额外缩进
+            var keys = Object.keys(item);
+            for (var k = 0; k < keys.length; k++) {
+              var kk = keys[k];
+              if (k === 0) {
+                lines.push(spaces(indent) + '- ' + kk + ': ' + yamlVal(item[kk]));
+              } else {
+                lines.push(spaces(indent + 2) + kk + ': ' + yamlVal(item[kk]));
+              }
+            }
+          } else if (typeof item === 'object' && item !== null && Array.isArray(item)) {
+            lines.push(objToYAML(item, indent + 2, depth, true));
+          } else {
+            lines.push(spaces(indent) + '- ' + yamlVal(item));
+          }
+        }
+        return lines.join('\n');
+      }
+
+      if (typeof obj === 'object') {
+        var keys2 = Object.keys(obj);
+        if (keys2.length === 0) return prefix + '{}';
+        var lines2 = [];
+        for (var j = 0; j < keys2.length; j++) {
+          var key = keys2[j];
+          var val = obj[key];
+          if (typeof val === 'object' && val !== null) {
+            lines2.push(spaces(indent) + key + ':');
+            lines2.push(objToYAML(val, indent + 2, depth + 1, false));
+          } else {
+            lines2.push(spaces(indent) + key + ': ' + yamlVal(val));
+          }
+        }
+        return lines2.join('\n');
+      }
+
+      return prefix + String(obj);
+    }
+
+    function yamlVal(val) {
+      if (val === null || val === undefined) return 'null';
+      if (typeof val === 'string') return yamlString(val);
+      if (typeof val === 'boolean') return String(val);
+      if (typeof val === 'number') return String(val);
+      if (Array.isArray(val)) return JSON.stringify(val);
+      if (typeof val === 'object') return JSON.stringify(val);
+      return String(val);
+    }
+
+    function yamlString(str) {
+      // 需要引号的判断
+      if (str === '') return "''";
+      if (/[:\{\}\[\],&\*\?\|<>=!%@`#]/.test(str) || /^\s/.test(str) || /\s$/.test(str)) {
+        return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n') + '"';
+      }
+      if (/^(true|false|null|~|yes|no|on|off|\d|\.\d)/i.test(str)) return '"' + str + '"';
+      return str;
+    }
+
+    function spaces(n) { return new Array(Math.max(0, n) + 1).join(' '); }
+
+    // ============================================================
+    // DOM 引用
+    // ============================================================
+    var inputArea   = document.getElementById('input-area');
+    var outputArea  = document.getElementById('output-area');
+    var statusBar   = document.getElementById('status-bar');
+    var inputStats  = document.getElementById('input-stats');
+    var outputStats = document.getElementById('output-stats');
+    var outputLabel = document.getElementById('output-label');
+    var btnFormat   = document.getElementById('btn-format');
+    var btnY2J      = document.getElementById('btn-yaml2json');
+    var btnJ2Y      = document.getElementById('btn-json2yaml');
+    var btnClear    = document.getElementById('btn-clear');
+    var btnCopy     = document.getElementById('btn-copy');
+
+    // ============================================================
+    // localStorage
+    // ============================================================
+    var STORAGE_KEY = 'yaml_input';
+    function loadInput() {
+      try { var s = localStorage.getItem(STORAGE_KEY); if (s) inputArea.value = s; } catch(e) {}
+    }
+    function saveInput(v) {
+      try { localStorage.setItem(STORAGE_KEY, v); } catch(e) {}
+    }
+
+    // ============================================================
+    // 统计
+    // ============================================================
+    function updInputStats() {
+      var v = inputArea.value, c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      inputStats.textContent = t('yaml.stats_format', { chars: c, lines: l });
+    }
+    function updOutputStats(val) {
+      var v = val || '', c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      outputStats.textContent = t('yaml.stats_format', { chars: c, lines: l });
+    }
+
+    // ============================================================
+    // Langchange 刷新 & 状态跟踪
+    // ============================================================
+    var lastOp = { mode: 'initial', success: true };
+
+    function setLastOp(mode, success) {
+      lastOp = { mode: mode, success: success };
+    }
+
+    function refreshDynamicText() {
+      updInputStats();
+      updOutputStats(outputArea.value);
+
+      if (lastOp.mode === 'initial' || lastOp.mode === 'clear') {
+        outputLabel.innerHTML = '<span class="text-text-muted">' + escapeHTML(t('yaml.status_waiting')) + '</span>';
+        if (lastOp.mode === 'clear') {
+          showStatus('info', t('yaml.status_cleared'));
+        }
+      } else if (lastOp.mode === 'format') {
+        if (lastOp.success) {
+          outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_formatted')) + '</span>';
+          showStatus('success', t('yaml.status_formatted'));
+        } else {
+          outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_fmt_fail')) + '</span>';
+        }
+      } else if (lastOp.mode === 'y2j') {
+        if (lastOp.success) {
+          outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_y2j_ok')) + '</span>';
+          showStatus('success', t('yaml.status_y2j_ok'));
+        } else {
+          outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_conv_fail')) + '</span>';
+        }
+      } else if (lastOp.mode === 'j2y') {
+        if (lastOp.success) {
+          outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_j2y_ok')) + '</span>';
+          showStatus('success', t('yaml.status_j2y_ok'));
+        } else {
+          outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_conv_fail')) + '</span>';
+        }
+      }
+    }
+
+    // ============================================================
+    // 操作
+    // ============================================================
+    function doFormat() {
+      var input = inputArea.value;
+      if (!input.trim()) { showStatus('warning', t('yaml.status_placeholder')); return; }
+      try {
+        var obj = parseYAML(input);
+        var out = objToYAML(obj, 0, 0, false);
+        outputArea.value = out;
+        outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_formatted')) + '</span>';
+        updOutputStats(out);
+        showStatus('success', t('yaml.status_formatted'));
+        setLastOp('format', true);
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_fmt_fail')) + '</span>';
+        updOutputStats('');
+        showStatus('error', t('yaml.status_error', { line: '', msg: e.message }));
+        setLastOp('format', false);
+      }
+    }
+
+    function doYAML2JSON() {
+      var input = inputArea.value;
+      if (!input.trim()) { showStatus('warning', t('yaml.status_placeholder')); return; }
+      try {
+        var obj = parseYAML(input);
+        var json = JSON.stringify(obj, null, 2);
+        outputArea.value = json;
+        outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_y2j_ok')) + '</span>';
+        updOutputStats(json);
+        showStatus('success', t('yaml.status_y2j_ok'));
+        setLastOp('y2j', true);
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_conv_fail')) + '</span>';
+        updOutputStats('');
+        showStatus('error', t('yaml.status_error', { line: '', msg: e.message }));
+        setLastOp('y2j', false);
+      }
+    }
+
+    function doJSON2YAML() {
+      var input = inputArea.value.trim();
+      if (!input) { showStatus('warning', t('yaml.status_placeholder')); return; }
+      try {
+        var obj = JSON.parse(input);
+        var yaml = objToYAML(obj, 0, 0, false);
+        outputArea.value = yaml;
+        outputLabel.innerHTML = '<span class="text-success">' + escapeHTML(t('yaml.status_j2y_ok')) + '</span>';
+        updOutputStats(yaml);
+        showStatus('success', t('yaml.status_j2y_ok'));
+        setLastOp('j2y', true);
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-error">' + escapeHTML(t('yaml.status_conv_fail')) + '</span>';
+        updOutputStats('');
+        showStatus('error', t('yaml.status_error', { line: '', msg: e.message }));
+        setLastOp('j2y', false);
+      }
+    }
+
+    function doClear() {
+      inputArea.value = '';
+      outputArea.value = '';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + escapeHTML(t('yaml.status_waiting')) + '</span>';
+      updInputStats(); updOutputStats(''); saveInput('');
+      showStatus('info', t('yaml.status_cleared'));
+      setLastOp('clear', true);
+      setActiveButton(btnFormat, [btnY2J, btnJ2Y]);
+    }
+
+    function doCopy() {
+      var v = outputArea.value;
+      if (!v) { showStatus('warning', t('yaml.status_empty_output')); return; }
+      var done = function () {
+        var orig = btnCopy.textContent;
+        btnCopy.textContent = t('yaml.copy_done');
+        btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+        setTimeout(function () {
+          btnCopy.textContent = orig;
+          btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+        }, 1200);
+        showStatus('success', t('yaml.status_copied'));
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v).then(done).catch(function () { fallbackCopy(v, done); });
+      } else { fallbackCopy(v, done); }
+    }
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement('textarea'); ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function showStatus(type, msg) {
+      var icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+      var colors = { success: 'text-success', error: 'text-error', warning: 'text-[#FF7D00]', info: 'text-text-muted' };
+      // Strip leading emoji from msg (i18n translations may already include one)
+      var cleanMsg = msg.replace(/^[✅❌⚠️ℹ️]\s*/, '');
+      statusBar.innerHTML = '<span class="inline-flex items-center gap-1 ' + (colors[type] || '') + ' text-sm font-medium">' +
+        (icons[type] || '') + ' ' + escapeHTML(cleanMsg) + '</span>';
+    }
+    function escapeHTML(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
+    // 按钮切换（三按钮互斥：格式化 / YAML→JSON / JSON→YAML）
+    // ============================================================
+    function setActiveButton(active, inactives) {
+      active.classList.add('bg-primary', 'text-white', 'border-none');
+      active.classList.remove('border', 'border-primary', 'text-primary', 'bg-white');
+      for (var i = 0; i < inactives.length; i++) {
+        inactives[i].classList.remove('bg-primary', 'text-white', 'border-none');
+        inactives[i].classList.add('border', 'border-primary', 'text-primary', 'bg-white');
+      }
+    }
+
+    // ============================================================
+    // 初始化
+    // ============================================================
+    function init() {
+      loadInput(); updInputStats(); updOutputStats('');
+
+      inputArea.addEventListener('input', function () { updInputStats(); saveInput(inputArea.value); });
+
+      btnFormat.addEventListener('click', function () { doFormat(); setActiveButton(btnFormat, [btnY2J, btnJ2Y]); });
+      btnY2J.addEventListener('click', function () { doYAML2JSON(); setActiveButton(btnY2J, [btnFormat, btnJ2Y]); });
+      btnJ2Y.addEventListener('click', function () { doJSON2YAML(); setActiveButton(btnJ2Y, [btnFormat, btnY2J]); });
+      btnClear.addEventListener('click', doClear);
+      btnCopy.addEventListener('click', doCopy);
+
+      inputArea.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doFormat(); setActiveButton(btnFormat, [btnY2J, btnJ2Y]); }
+      });
+
+      if (inputArea.value) { doFormat(); }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else { init(); }
+  })();
+  </script>
+</body>
+</html>

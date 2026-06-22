@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="regex.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线正则表达式测试工具 - 正则匹配高亮分组</title>
+  <meta name="description" content="免费在线正则表达式测试工具，支持实时高亮匹配、分组提取、数量统计，内置常用正则模板库（邮箱/手机/IP/网址/身份证等），无需注册开箱即用。">
+  <meta name="keywords" content="正则表达式, 正则测试, RegEx, 正则匹配, 正则高亮, 正则分组, 在线正则工具">
+  <meta name="robots" content="index, follow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF', 'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA', 'text-main': '#1D2129',
+            'text-secondary': '#4E5969', 'text-muted': '#86909C',
+            'success': '#00B42A', 'error': '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-regex {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    #test-input::-webkit-scrollbar { width: 6px; height: 6px; }
+    #test-input::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #test-input::-webkit-scrollbar-track { background: transparent; }
+    #highlight-area::-webkit-scrollbar { width: 6px; height: 6px; }
+    #highlight-area::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #highlight-area::-webkit-scrollbar-track { background: transparent; }
+    .match-highlight { background: #FFE4B5; border-radius: 2px; padding: 0 1px; }
+    .match-highlight-alt { background: #FFD700; border-radius: 2px; padding: 0 1px; }
+    .match-highlight-focus { background: #FF8C00; color: #fff; border-radius: 2px; padding: 0 1px; }
+    .group-highlight { background: #B3E5FC; border-radius: 2px; padding: 0 1px; }
+    .flag-btn { transition: all 0.15s ease; }
+    .flag-btn.active { background: #165DFF; color: #fff; border-color: #165DFF; }
+    .template-chip { transition: all 0.15s ease; cursor: pointer; }
+    .template-chip:hover { background: #E8F3FF; border-color: #165DFF; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <!-- ========== 标题 + 工具栏 ========== -->
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="regex.title">在线正则表达式测试工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="regex.subtitle">正则匹配 / 分组提取 / 实时高亮 — 内置常用模板，支持多修饰符切换</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-clear" class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="regex.btn_clear">清空</button>
+          <button id="btn-copy"  class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="regex.btn_copy">复制结果</button>
+        </div>
+      </div>
+
+      <!-- 正则表达式输入行 -->
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold text-text-main whitespace-nowrap" data-i18n="regex.label_pattern">正则表达式</span>
+          <span class="text-xl text-text-muted font-mono-regex select-none">/</span>
+          <input id="regex-input"
+            class="flex-1 min-w-0 h-10 px-3 font-mono-regex text-text-main border border-gray-200 rounded-btn
+                   focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted"
+            type="text"
+            placeholder="输入正则表达式，如 \d{3}-\d{4}"
+            spellcheck="false"
+            autocomplete="off">
+          <span class="text-xl text-text-muted font-mono-regex select-none">/</span>
+          <div class="flex gap-2" id="flag-buttons">
+            <button data-flag="g" class="flag-btn active w-8 h-8 text-xs font-bold border border-gray-300 rounded-btn bg-[#165DFF] text-white cursor-pointer" data-i18n-placeholder="regex.flag_g" title="全局匹配 (global)">g</button>
+            <button data-flag="i" class="flag-btn w-8 h-8 text-xs font-bold border border-gray-300 rounded-btn bg-white text-text-secondary cursor-pointer" data-i18n-placeholder="regex.flag_i" title="忽略大小写 (case-insensitive)">i</button>
+            <button data-flag="m" class="flag-btn w-8 h-8 text-xs font-bold border border-gray-300 rounded-btn bg-white text-text-secondary cursor-pointer" data-i18n-placeholder="regex.flag_m" title="多行模式 (multiline)">m</button>
+            <button data-flag="s" class="flag-btn w-8 h-8 text-xs font-bold border border-gray-300 rounded-btn bg-white text-text-secondary cursor-pointer" data-i18n-placeholder="regex.flag_s" title="点匹配换行 (dotAll)">s</button>
+          </div>
+        </div>
+
+        <!-- 状态提示 -->
+        <div id="regex-status" class="flex items-center gap-2 text-sm min-h-[28px]">
+          <span class="text-text-muted" data-i18n="regex.status_waiting">输入正则表达式开始测试</span>
+        </div>
+
+        <!-- 常用模板 -->
+        <div>
+          <span class="text-xs text-text-muted mr-2" data-i18n="regex.templates_label">常用模板：</span>
+          <div class="inline-flex flex-wrap gap-2 align-middle" id="template-chips"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 测试文本区 ========== -->
+    <section class="bg-white rounded-card shadow-card p-4 flex flex-col">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-semibold text-text-main" data-i18n="regex.label_test">测试文本</h2>
+        <span class="text-xs text-text-muted" data-i18n="regex.test_hint">在此粘贴或输入待匹配的文本内容</span>
+      </div>
+      <textarea id="test-input"
+        class="w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-regex text-text-main
+               focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted min-h-[200px]"
+        placeholder="在此粘贴测试文本...&#10;例如：联系方式：admin@example.com，电话：13812345678"
+        rows="8"
+        spellcheck="false"></textarea>
+      <div class="flex items-center justify-between mt-2">
+        <span id="test-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        <span id="match-count" class="text-xs font-medium text-text-muted"></span>
+      </div>
+    </section>
+
+    <!-- ========== 结果展示区 ========== -->
+    <section class="bg-white rounded-card shadow-card p-4 flex flex-col" id="results-section">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-text-main" data-i18n="regex.result_title">匹配结果</h2>
+        <span id="result-summary" class="text-xs text-text-muted" data-i18n="regex.waiting_input">等待输入…</span>
+      </div>
+
+      <!-- 高亮文本展示 -->
+      <div id="highlight-area"
+        class="w-full border border-gray-200 rounded-btn p-4 font-mono-regex text-text-main bg-gray-50
+               overflow-auto min-h-[60px] max-h-[400px] whitespace-pre-wrap break-all"
+        style="line-height: 1.8;">
+        <span class="text-text-muted" data-i18n="regex.status_highlight_placeholder">匹配结果将在此高亮显示...</span>
+      </div>
+
+      <!-- 分组详情表格 -->
+      <div id="groups-container" class="mt-3 hidden">
+        <h3 class="text-sm font-semibold text-text-main mb-2" data-i18n="regex.groups_title">分组详情</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse" id="groups-table">
+            <thead>
+              <tr class="border-0 border-b border-solid border-gray-200 text-left">
+                <th class="py-2 pr-4 text-text-secondary font-medium whitespace-nowrap">#</th>
+                <th class="py-2 pr-4 text-text-secondary font-medium whitespace-nowrap">位置</th>
+                <th class="py-2 pr-4 text-text-secondary font-medium">完整匹配</th>
+                <th class="py-2 text-text-secondary font-medium">分组</th>
+              </tr>
+            </thead>
+            <tbody id="groups-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var t = window.t;
+    document.addEventListener('langchange', function () { updTestStats(); runRegex(); buildTemplateChips(); });
+
+    // ============================================================
+    // DOM
+    // ============================================================
+    var regexInput    = document.getElementById('regex-input');
+    var testInput     = document.getElementById('test-input');
+    var regexStatus   = document.getElementById('regex-status');
+    var testStats     = document.getElementById('test-stats');
+    var matchCount    = document.getElementById('match-count');
+    var resultSummary = document.getElementById('result-summary');
+    var highlightArea = document.getElementById('highlight-area');
+    var groupsContainer = document.getElementById('groups-container');
+    var groupsTbody   = document.getElementById('groups-tbody');
+    var btnClear      = document.getElementById('btn-clear');
+    var btnCopy       = document.getElementById('btn-copy');
+    var templateChips = document.getElementById('template-chips');
+    var flagButtons   = document.getElementById('flag-buttons');
+
+    var STORAGE_REGEX_KEY = 'regex_pattern';
+    var STORAGE_TEST_KEY  = 'regex_test_text';
+    var DEBOUNCE_MS = 300;
+
+    // ============================================================
+    // Flags state
+    // ============================================================
+    var flags = { g: true, i: false, m: false, s: false };
+
+    function getFlagsString() {
+      var s = '';
+      if (flags.g) s += 'g';
+      if (flags.i) s += 'i';
+      if (flags.m) s += 'm';
+      if (flags.s) s += 's';
+      return s;
+    }
+
+    function updateFlagButtons() {
+      var btns = flagButtons.querySelectorAll('button');
+      for (var b = 0; b < btns.length; b++) {
+        var btn = btns[b];
+        var f = btn.getAttribute('data-flag');
+        if (flags[f]) {
+          btn.classList.add('active');
+          btn.classList.add('bg-[#165DFF]', 'text-white');
+          btn.classList.remove('bg-white', 'text-text-secondary');
+        } else {
+          btn.classList.remove('active');
+          btn.classList.remove('bg-[#165DFF]', 'text-white');
+          btn.classList.add('bg-white', 'text-text-secondary');
+        }
+      }
+    }
+
+    // ============================================================
+    // localStorage
+    // ============================================================
+    function loadStored() {
+      try {
+        var re = localStorage.getItem(STORAGE_REGEX_KEY);
+        if (re) regexInput.value = re;
+        var txt = localStorage.getItem(STORAGE_TEST_KEY);
+        if (txt) testInput.value = txt;
+      } catch(e) {}
+    }
+    function saveRegex(v) { try { localStorage.setItem(STORAGE_REGEX_KEY, v); } catch(e) {} }
+    function saveTest(v)  { try { localStorage.setItem(STORAGE_TEST_KEY, v); } catch(e) {} }
+
+    // ============================================================
+    // Stats
+    // ============================================================
+    function updTestStats() {
+      var v = testInput.value, c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      testStats.textContent = t('regex.stats_format', { chars: c, lines: l });
+    }
+
+    // ============================================================
+    // HTML escaping
+    // ============================================================
+    function escHTML(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
+    // Regex Execution
+    // ============================================================
+    var lastMatches = []; // stored for copy
+
+    function runRegex() {
+      var pattern = regexInput.value;
+      var text    = testInput.value;
+      var flagStr = getFlagsString();
+      lastMatches = [];
+
+      // Empty pattern
+      if (!pattern) {
+        regexStatus.innerHTML = '<span class="text-text-muted text-sm">' + t('regex.status_waiting') + '</span>';
+        highlightArea.innerHTML = '<span class="text-text-muted">' + t('regex.status_highlight_placeholder') + '</span>';
+        matchCount.textContent = '';
+        resultSummary.textContent = t('regex.waiting_input');
+        groupsContainer.classList.add('hidden');
+        groupsTbody.innerHTML = '';
+        return;
+      }
+
+      // Try to compile regex
+      var re;
+      try {
+        re = new RegExp(pattern, flagStr);
+      } catch (e) {
+        regexStatus.innerHTML = '<span class="inline-flex items-center gap-1 text-[#F53F3F] text-sm font-medium">' + t('regex.error_invalid', { msg: escHTML(e.message) }) + '</span>';
+        highlightArea.innerHTML = '<span class="text-text-muted">' + t('regex.status_invalid_regex') + '</span>';
+        matchCount.textContent = '';
+        resultSummary.textContent = t('regex.status_expr_error');
+        groupsContainer.classList.add('hidden');
+        groupsTbody.innerHTML = '';
+        return;
+      }
+
+      // Empty test text
+      if (!text) {
+        regexStatus.innerHTML = '<span class="inline-flex items-center gap-1 text-[#00B42A] text-sm font-medium">' + t('regex.status_correct') + '</span>';
+        highlightArea.innerHTML = '<span class="text-text-muted">' + t('regex.status_enter_test') + '</span>';
+        matchCount.textContent = '';
+        resultSummary.textContent = t('regex.status_enter_test');
+        groupsContainer.classList.add('hidden');
+        groupsTbody.innerHTML = '';
+        return;
+      }
+
+      // Execute matching
+      var matches = [];
+      var match;
+      var isGlobal = flagStr.indexOf('g') !== -1;
+
+      if (isGlobal) {
+        while ((match = re.exec(text)) !== null) {
+          matches.push({
+            full: match[0],
+            index: match.index,
+            endIndex: match.index + match[0].length,
+            groups: Array.prototype.slice.call(match, 1)
+          });
+          lastMatches.push(match[0]);
+          // Prevent infinite loop on zero-length matches
+          if (match[0].length === 0) {
+            re.lastIndex++;
+            if (re.lastIndex > text.length) break;
+          }
+        }
+      } else {
+        match = re.exec(text);
+        // Also run without 'g' — exec still works for single match
+        // Actually, with non-global, we just get the first match
+        // But let's re-run with the actual flags for exec
+        // For non-global, exec returns first match only
+        if (match) {
+          matches.push({
+            full: match[0],
+            index: match.index,
+            endIndex: match.index + match[0].length,
+            groups: Array.prototype.slice.call(match, 1)
+          });
+          lastMatches.push(match[0]);
+        }
+      }
+
+      // Update status
+      if (matches.length > 0) {
+        regexStatus.innerHTML = '<span class="inline-flex items-center gap-1 text-[#00B42A] text-sm font-medium">' + t('regex.status_correct') + '</span>';
+      } else {
+        regexStatus.innerHTML = '<span class="inline-flex items-center gap-1 text-[#FF7D00] text-sm font-medium">' + t('regex.status_no_match') + '</span>';
+      }
+
+      // Build highlighted HTML
+      buildHighlight(text, matches);
+
+      // Update match count
+      matchCount.textContent = t('regex.match_count', { count: matches.length });
+      resultSummary.textContent = t('regex.match_count', { count: matches.length });
+
+      // Build groups table
+      buildGroupsTable(matches);
+    }
+
+    // ============================================================
+    // Highlight builder
+    // ============================================================
+    function buildHighlight(text, matches) {
+      if (matches.length === 0) {
+        highlightArea.innerHTML = '<span class="text-text-muted">' + escHTML(text) + '</span>';
+        return;
+      }
+
+      // Sort matches by index
+      var sorted = matches.slice().sort(function(a, b) { return a.index - b.index; });
+
+      var html = '';
+      var pos = 0;
+
+      for (var i = 0; i < sorted.length; i++) {
+        var m = sorted[i];
+
+        // Skip overlapping matches (keep first)
+        if (m.index < pos) continue;
+
+        // Text before match
+        if (m.index > pos) {
+          html += escHTML(text.substring(pos, m.index));
+        }
+
+        // Highlighted match
+        var altClass = (i % 2 === 0) ? 'match-highlight' : 'match-highlight-alt';
+        html += '<mark class="' + altClass + '" title="匹配 ' + (i + 1) + ': ' + escHTML(m.full) + '">' + escHTML(m.full) + '</mark>';
+
+        pos = m.endIndex;
+      }
+
+      // Remaining text
+      if (pos < text.length) {
+        html += escHTML(text.substring(pos));
+      }
+
+      highlightArea.innerHTML = html || '<span class="text-text-muted">（空匹配结果）</span>';
+    }
+
+    // ============================================================
+    // Groups table builder
+    // ============================================================
+    function buildGroupsTable(matches) {
+      if (matches.length === 0) {
+        groupsContainer.classList.add('hidden');
+        groupsTbody.innerHTML = '';
+        return;
+      }
+
+      // Check if any match has groups
+      var hasGroups = false;
+      for (var i = 0; i < matches.length; i++) {
+        if (matches[i].groups.length > 0) { hasGroups = true; break; }
+      }
+
+      // Always show table with match details
+      groupsContainer.classList.remove('hidden');
+      var rows = '';
+      var maxShow = Math.min(matches.length, 50); // limit display
+
+      for (var j = 0; j < maxShow; j++) {
+        var m = matches[j];
+        var groupStr = '';
+        if (m.groups.length > 0) {
+          var gParts = [];
+          for (var g = 0; g < m.groups.length; g++) {
+            var gv = m.groups[g];
+            if (gv !== undefined) {
+              gParts.push('<span class="inline-block bg-[#B3E5FC] rounded px-1 py-0.5 font-mono-regex text-xs mr-1 mb-1">$' + (g + 1) + ': ' + escHTML(gv) + '</span>');
+            } else {
+              gParts.push('<span class="inline-block bg-gray-100 rounded px-1 py-0.5 font-mono-regex text-xs text-text-muted mr-1 mb-1">$' + (g + 1) + ': (undefined)</span>');
+            }
+          }
+          groupStr = gParts.join('');
+        } else {
+          groupStr = '<span class="text-text-muted">—</span>';
+        }
+
+        rows += '<tr class="border-0 border-b border-solid border-gray-100 hover:bg-gray-50">' +
+          '<td class="py-2 pr-4 font-mono-regex text-text-muted text-xs">' + (j + 1) + '</td>' +
+          '<td class="py-2 pr-4 font-mono-regex text-text-muted text-xs whitespace-nowrap">' + m.index + '-' + m.endIndex + '</td>' +
+          '<td class="py-2 pr-4 font-mono-regex text-text-main text-xs break-all"><mark class="match-highlight">' + escHTML(m.full) + '</mark></td>' +
+          '<td class="py-2 text-xs">' + groupStr + '</td>' +
+          '</tr>';
+      }
+
+      if (matches.length > maxShow) {
+        rows += '<tr><td colspan="4" class="py-2 text-text-muted text-xs">... 仅显示前 ' + maxShow + ' 条，共 ' + matches.length + ' 条匹配</td></tr>';
+      }
+
+      groupsTbody.innerHTML = rows;
+    }
+
+    // ============================================================
+    // Actions
+    // ============================================================
+    function doClear() {
+      regexInput.value = '';
+      testInput.value = '';
+      highlightArea.innerHTML = '<span class="text-text-muted">' + t('regex.status_highlight_placeholder') + '</span>';
+      groupsContainer.classList.add('hidden');
+      groupsTbody.innerHTML = '';
+      regexStatus.innerHTML = '<span class="text-text-muted text-sm">' + t('regex.status_waiting') + '</span>';
+      matchCount.textContent = '';
+      resultSummary.textContent = t('regex.waiting_input');
+      updTestStats();
+      saveRegex('');
+      saveTest('');
+      lastMatches = [];
+    }
+
+    function doCopy() {
+      if (lastMatches.length === 0) {
+        // Try to run matching first
+        runRegex();
+        if (lastMatches.length === 0) {
+          showCopyFeedback(t('regex.no_match'));
+          return;
+        }
+      }
+
+      // Build copy content
+      var text = testInput.value;
+      var lines = [];
+      lines.push('正则表达式: /' + regexInput.value + '/' + getFlagsString());
+      lines.push('匹配数量: ' + lastMatches.length);
+      lines.push('');
+
+      // Re-run to get full match details
+      var flagStr = getFlagsString();
+      var re;
+      try { re = new RegExp(regexInput.value, flagStr); } catch(e) { return; }
+      var matchIdx = 1;
+      if (flagStr.indexOf('g') !== -1) {
+        var m;
+        while ((m = re.exec(text)) !== null) {
+          lines.push('匹配 ' + matchIdx + ' (位置 ' + m.index + '-' + (m.index + m[0].length) + '): ' + m[0]);
+          for (var g = 1; g < m.length; g++) {
+            lines.push('  $' + g + ': ' + (m[g] !== undefined ? m[g] : '(undefined)'));
+          }
+          matchIdx++;
+          if (m[0].length === 0) { re.lastIndex++; if (re.lastIndex > text.length) break; }
+        }
+      } else {
+        var sm = re.exec(text);
+        if (sm) {
+          lines.push('匹配 ' + matchIdx + ' (位置 ' + sm.index + '-' + (sm.index + sm[0].length) + '): ' + sm[0]);
+          for (var g2 = 1; g2 < sm.length; g2++) {
+            lines.push('  $' + g2 + ': ' + (sm[g2] !== undefined ? sm[g2] : '(undefined)'));
+          }
+        }
+      }
+
+      var copyText = lines.join('\n');
+      var done = function () {
+        var orig = btnCopy.textContent;
+        btnCopy.textContent = t('regex.copy_done');
+        btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+        setTimeout(function () {
+          btnCopy.textContent = orig;
+          btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+        }, 1200);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(done).catch(function () { fallbackCopy(copyText, done); });
+      } else { fallbackCopy(copyText, done); }
+    }
+
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement('textarea'); ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function showCopyFeedback(msg) {
+      var orig = btnCopy.textContent;
+      btnCopy.textContent = msg;
+      setTimeout(function () { btnCopy.textContent = orig; }, 1200);
+    }
+
+    // ============================================================
+    // Debounce helper
+    // ============================================================
+    var runTimer = null;
+    function debounceRun() {
+      if (runTimer) clearTimeout(runTimer);
+      runTimer = setTimeout(runRegex, DEBOUNCE_MS);
+    }
+
+    // ============================================================
+    // Init
+    // ============================================================
+    // Build template chips from i18n data
+    function buildTemplateChips() {
+      var templates = t('regex.templates');
+      var patterns = [
+        '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}',
+        '1[3-9]\\d{9}',
+        '(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)',
+        'https?://[^\\s/$.?#].[^\\s]*',
+        '[1-9]\\d{5}(?:19|20)\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])\\d{3}[\\dXx]',
+        '\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])',
+        '[一-龥]+',
+        '<[^>]+>',
+        '^\\s*$',
+        '\\b\\d+\\b'
+      ];
+      var html = '';
+      for (var i = 0; i < templates.length; i++) {
+        html += '<button data-pattern="' + patterns[i] + '" class="template-chip px-2.5 py-0.5 text-xs border border-gray-200 rounded-full bg-gray-50 text-text-secondary hover:border-primary hover:text-primary transition-btn">' + escHTML(templates[i]) + '</button>';
+      }
+      templateChips.innerHTML = html;
+    }
+
+    function init() {
+      loadStored();
+      updTestStats();
+      updateFlagButtons();
+      buildTemplateChips();
+
+      // Run on initial load if content exists
+      if (regexInput.value || testInput.value) {
+        debounceRun();
+      }
+
+      // Input events
+      regexInput.addEventListener('input', function () {
+        saveRegex(regexInput.value);
+        debounceRun();
+      });
+
+      testInput.addEventListener('input', function () {
+        updTestStats();
+        saveTest(testInput.value);
+        debounceRun();
+      });
+
+      // Flag toggles
+      flagButtons.addEventListener('click', function (e) {
+        var btn = e.target.closest('button');
+        if (!btn) return;
+        var f = btn.getAttribute('data-flag');
+        if (f) {
+          // Toggle flag; 'g' cannot be the only one toggled off... actually let user decide
+          flags[f] = !flags[f];
+          updateFlagButtons();
+          debounceRun();
+        }
+      });
+
+      // Template chips
+      templateChips.addEventListener('click', function (e) {
+        var chip = e.target.closest('button');
+        if (!chip) return;
+        var pattern = chip.getAttribute('data-pattern');
+        if (pattern) {
+          regexInput.value = pattern;
+          saveRegex(pattern);
+          // Highlight clicked chip briefly
+          chip.style.background = '#165DFF';
+          chip.style.color = '#fff';
+          chip.style.borderColor = '#165DFF';
+          setTimeout(function () {
+            chip.style.background = '';
+            chip.style.color = '';
+            chip.style.borderColor = '';
+          }, 300);
+          debounceRun();
+        }
+      });
+
+      // Action buttons
+      btnClear.addEventListener('click', doClear);
+      btnCopy.addEventListener('click', doCopy);
+
+      // Ctrl+Enter to trigger highlight refresh
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          runRegex();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else { init(); }
+  })();
+  </script>
+</body>
+</html>

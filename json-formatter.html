@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="json.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON 格式化校验工具 - 在线 JSON 美化压缩</title>
+  <meta name="description" content="免费在线 JSON 格式化校验工具，支持 JSON 美化缩进、一键压缩、实时语法校验与错误定位、代码高亮显示，无需注册开箱即用。">
+  <meta name="keywords" content="JSON 格式化, JSON 校验, JSON 压缩, JSON 美化, JSON 高亮, 在线 JSON 工具">
+  <meta name="robots" content="index, follow">
+
+  <!-- Tailwind CSS v3 CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF',
+            'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA',
+            'text-main': '#1D2129',
+            'text-secondary': '#4E5969',
+            'text-muted': '#86909C',
+            'success': '#00B42A',
+            'error':   '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-json {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    /* JSON 语法高亮颜色 */
+    .json-key       { color: #165DFF; }  /* key 名 */
+    .json-string    { color: #00B42A; }  /* 字符串值 */
+    .json-number    { color: #FF7D00; }  /* 数字 */
+    .json-boolean   { color: #722ED1; }  /* true / false */
+    .json-null      { color: #722ED1; }  /* null */
+    .json-bracket   { color: #1D2129; }  /* {} [] */
+    .json-punct     { color: #86909C; }  /* : , */
+    .json-whitespace { }
+    .json-error-marker {
+      background-color: #FEF0F0;
+      border-bottom: 2px wavy #F53F3F;
+    }
+    /* 输出区域滚动条 */
+    #output-area::-webkit-scrollbar { width: 6px; height: 6px; }
+    #output-area::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #output-area::-webkit-scrollbar-track  { background: transparent; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <!-- ========== 顶部导航 ========== -->
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <!-- 语言切换按钮 -->
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========== 主体区域 ========== -->
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <!-- 标题 + 工具栏 -->
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="json.title">JSON 格式化校验工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="json.subtitle">粘贴杂乱 JSON，一键格式化 / 压缩，实时语法校验</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-format"  class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="json.btn_format">格式化</button>
+          <button id="btn-compress" class="min-w-[88px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="json.btn_compress">压缩</button>
+          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_clear">清空</button>
+          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_copy">复制结果</button>
+        </div>
+      </div>
+
+      <!-- 校验状态 -->
+      <div id="validation-status" class="flex items-center gap-2 text-sm min-h-[28px]">
+        <span class="text-text-muted" data-i18n="json.status_waiting">等待输入…</span>
+      </div>
+    </section>
+
+    <!-- 输入 / 输出 分栏 -->
+    <section class="flex flex-col md:flex-row gap-4 flex-1 min-h-[500px]">
+      <!-- 输入框 -->
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.input_label">输入</h2>
+          <span class="text-xs text-text-muted" data-i18n="json.input_hint">粘贴 JSON 到此处</span>
+        </div>
+        <textarea id="input-area"
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-json text-text-main
+                 focus:outline-none focus:border-primary transition-btn
+                 placeholder:text-text-muted"
+          placeholder='{"key": "value", "list": [1, 2, 3]}'
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+
+      <!-- 输出框 -->
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.output_label">结果</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="json.status_waiting_fmt">等待格式化…</span>
+        </div>
+        <pre id="output-area"
+          class="flex-1 overflow-auto border border-gray-200 rounded-btn p-4 font-mono-json text-text-main m-0
+                 whitespace-pre-wrap break-words min-h-[200px]"></pre>
+        <div class="flex items-center justify-between mt-2">
+          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== 底部页脚 ========== -->
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    // 引用全局 i18n 函数
+    var t = window.t;
+
+    // 监听语言切换事件，刷新动态内容
+    document.addEventListener('langchange', function () {
+      updateInputStats();
+      renderValidationStatus();
+      refreshOutputLabel();
+    });
+
+    // ============================================================
+    // DOM 引用
+    // ============================================================
+    var inputArea   = document.getElementById('input-area');
+    var outputArea  = document.getElementById('output-area');
+    var statusEl    = document.getElementById('validation-status');
+    var inputStats  = document.getElementById('input-stats');
+    var outputStats = document.getElementById('output-stats');
+    var outputLabel = document.getElementById('output-label');
+    var btnFormat   = document.getElementById('btn-format');
+    var btnCompress = document.getElementById('btn-compress');
+    var btnClear    = document.getElementById('btn-clear');
+    var btnCopy     = document.getElementById('btn-copy');
+
+    var DEBOUNCE_MS = 250;
+    var debounceTimer = null;
+
+    // 跟踪当前输出模式: null | 'format' | 'compress'
+    var currentOutputMode = null;
+
+    // ============================================================
+    // 从 localStorage 恢复 / 保存
+    // ============================================================
+    var STORAGE_KEY = 'json_formatter_input';
+
+    function loadInput() {
+      try {
+        var saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) { inputArea.value = saved; }
+      } catch(e) {}
+    }
+    function saveInput(val) {
+      try { localStorage.setItem(STORAGE_KEY, val); } catch(e) {}
+    }
+
+    // ============================================================
+    // 更新输入统计
+    // ============================================================
+    function updateInputStats() {
+      var val = inputArea.value;
+      var chars = val.length;
+      var lines = chars === 0 ? 1 : val.split('\n').length;
+      inputStats.textContent = t('json.stats_format', { chars: chars, lines: lines });
+    }
+
+    function updateOutputStats(text) {
+      var chars = (text || '').length;
+      var lines = chars === 0 ? 1 : text.split('\n').length;
+      outputStats.textContent = t('json.stats_format', { chars: chars, lines: lines });
+    }
+
+    function refreshOutputLabel() {
+      if (currentOutputMode === 'format') {
+        outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('json.status_formatted') + '</span>';
+      } else if (currentOutputMode === 'compress') {
+        // 需要重新计算压缩后字符数
+        var raw = inputArea.value.trim();
+        if (raw) {
+          try {
+            var parsed = JSON.parse(raw);
+            var compressed = JSON.stringify(parsed);
+            outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('json.status_compressed', { chars: compressed.length }) + '</span>';
+          } catch (e) {
+            outputLabel.innerHTML = '<span class="text-[#F53F3F]">' + t('json.status_cmp_fail') + '</span>';
+          }
+        }
+      }
+    }
+
+    // ============================================================
+    // JSON 校验（返回 {valid, error?{line,col,message}}）
+    // ============================================================
+    function validateJSON(raw) {
+      try {
+        JSON.parse(raw);
+        return { valid: true };
+      } catch (e) {
+        return { valid: false, error: parseErrorInfo(e, raw) };
+      }
+    }
+
+    function parseErrorInfo(e, raw) {
+      var msg = e.message || '';
+      var position = -1;
+      var posMatch = msg.match(/position\s+(\d+)/i);
+      if (posMatch) {
+        position = parseInt(posMatch[1], 10);
+      }
+
+      var line = 1, col = 1;
+      if (position >= 0 && position < raw.length) {
+        var before = raw.substring(0, position + 1);
+        line = before.split('\n').length;
+        var lastNewline = before.lastIndexOf('\n');
+        col = lastNewline === -1 ? position + 1 : position - lastNewline;
+      }
+
+      var cnMsg = getErrorMessage(msg);
+      return { line: line, col: col, message: cnMsg, position: position };
+    }
+
+    function getErrorMessage(msg) {
+      if (/unexpected\s+(token|end)/i.test(msg)) {
+        return t('json.err_unexpected');
+      }
+      if (/unterminated\s+string/i.test(msg)) {
+        return t('json.err_unterminated');
+      }
+      if (/unexpected\s+number/i.test(msg)) {
+        return t('json.err_number');
+      }
+      if (/bad\s+control\s+character/i.test(msg)) {
+        return t('json.err_control');
+      }
+      if (/duplicate/i.test(msg)) {
+        return t('json.err_duplicate');
+      }
+      return msg;
+    }
+
+    // ============================================================
+    // 实时校验 + 渲染
+    // ============================================================
+    function renderValidationStatus() {
+      var raw = inputArea.value;
+
+      if (raw.trim() === '') {
+        statusEl.innerHTML = '<span class="text-text-muted">' + t('json.status_waiting') + '</span>';
+        return;
+      }
+
+      var result = validateJSON(raw);
+
+      if (result.valid) {
+        statusEl.innerHTML = '<span class="inline-flex items-center gap-1 text-[#00B42A] text-sm font-medium">' +
+          t('json.status_valid') + '</span>';
+      } else {
+        var err = result.error;
+        statusEl.innerHTML = '<span class="inline-flex items-center gap-1 text-[#F53F3F] text-sm font-medium">' +
+          t('json.status_error', { line: err.line, col: err.col, msg: escapeHTML(err.message) }) +
+          '</span>';
+      }
+    }
+
+    function onInputChange() {
+      var raw = inputArea.value;
+      updateInputStats();
+      saveInput(raw);
+
+      if (raw.trim() === '') {
+        statusEl.innerHTML = '<span class="text-text-muted">' + t('json.status_waiting') + '</span>';
+        outputArea.innerHTML = '';
+        outputLabel.textContent = t('json.status_waiting');
+        updateOutputStats('');
+        currentOutputMode = null;
+        return;
+      }
+
+      renderValidationStatus();
+
+      // 自动刷新当前模式的输出
+      if (currentOutputMode === 'format') {
+        formatJSON(true);
+      } else if (currentOutputMode === 'compress') {
+        compressJSON(true);
+      }
+    }
+
+    // ============================================================
+    // 格式化
+    // ============================================================
+    function formatJSON(silent) {
+      var raw = inputArea.value.trim();
+      if (!raw) return;
+
+      currentOutputMode = 'format';
+
+      try {
+        var parsed = JSON.parse(raw);
+        var formatted = JSON.stringify(parsed, null, 2);
+        outputArea.innerHTML = highlightJSON(formatted);
+        outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('json.status_formatted') + '</span>';
+        updateOutputStats(formatted);
+      } catch (e) {
+        outputArea.textContent = '';
+        outputLabel.innerHTML = '<span class="text-[#F53F3F]">' + t('json.status_fmt_fail') + '</span>';
+        updateOutputStats('');
+      }
+    }
+
+    // ============================================================
+    // 压缩
+    // ============================================================
+    function compressJSON(silent) {
+      var raw = inputArea.value.trim();
+      if (!raw) return;
+
+      currentOutputMode = 'compress';
+
+      try {
+        var parsed = JSON.parse(raw);
+        var compressed = JSON.stringify(parsed);
+        outputArea.innerHTML = highlightJSON(compressed);
+        outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('json.status_compressed', { chars: compressed.length }) + '</span>';
+        updateOutputStats(compressed);
+      } catch (e) {
+        outputArea.textContent = '';
+        outputLabel.innerHTML = '<span class="text-[#F53F3F]">' + t('json.status_cmp_fail') + '</span>';
+        updateOutputStats('');
+      }
+    }
+
+    // ============================================================
+    // JSON 语法高亮
+    // ============================================================
+    function highlightJSON(jsonStr) {
+      var tokens = tokenizeJSON(jsonStr);
+      var html = '';
+      for (var i = 0; i < tokens.length; i++) {
+        var tk = tokens[i];
+        html += '<span class="' + tk.cssClass + '">' + escapeHTML(tk.value) + '</span>';
+      }
+      return html;
+    }
+
+    function tokenizeJSON(str) {
+      var tokens = [];
+      var i = 0;
+      var len = str.length;
+
+      while (i < len) {
+        var ch = str[i];
+
+        // 空白
+        if (ch === ' ' || ch === '\n' || ch === '\r' || ch === '\t') {
+          var ws = ch;
+          i++;
+          while (i < len && (str[i] === ' ' || str[i] === '\n' || str[i] === '\r' || str[i] === '\t')) {
+            ws += str[i]; i++;
+          }
+          tokens.push({ value: ws, cssClass: 'json-whitespace' });
+          continue;
+        }
+
+        // 括号
+        if (ch === '{' || ch === '}') {
+          tokens.push({ value: ch, cssClass: 'json-bracket' }); i++; continue;
+        }
+        if (ch === '[' || ch === ']') {
+          tokens.push({ value: ch, cssClass: 'json-bracket' }); i++; continue;
+        }
+
+        // 标点
+        if (ch === ':' || ch === ',') {
+          tokens.push({ value: ch, cssClass: 'json-punct' }); i++; continue;
+        }
+
+        // 字符串
+        if (ch === '"') {
+          var start = i;
+          i++;
+          while (i < len) {
+            if (str[i] === '\\') { i += 2; continue; }
+            if (str[i] === '"') { i++; break; }
+            i++;
+          }
+          var rawStr = str.substring(start, i);
+
+          var j = i;
+          while (j < len && (str[j] === ' ' || str[j] === '\n' || str[j] === '\r' || str[j] === '\t')) { j++; }
+          var isKey = (j < len && str[j] === ':');
+
+          tokens.push({ value: rawStr, cssClass: isKey ? 'json-key' : 'json-string' });
+          continue;
+        }
+
+        // 数字
+        if (ch === '-' || (ch >= '0' && ch <= '9')) {
+          var numStr = '';
+          while (i < len && /[0-9eE+\-.]/.test(str[i])) {
+            numStr += str[i]; i++;
+          }
+          tokens.push({ value: numStr, cssClass: 'json-number' });
+          continue;
+        }
+
+        // true / false / null
+        if (ch === 't' || ch === 'f' || ch === 'n') {
+          var word = '';
+          while (i < len && /[a-z]/i.test(str[i])) {
+            word += str[i]; i++;
+          }
+          var cssCls = (word === 'true' || word === 'false') ? 'json-boolean' :
+                       (word === 'null') ? 'json-null' : '';
+          tokens.push({ value: word, cssClass: cssCls || 'json-string' });
+          continue;
+        }
+
+        // 其他字符
+        tokens.push({ value: ch, cssClass: '' });
+        i++;
+      }
+
+      return tokens;
+    }
+
+    // ============================================================
+    // 复制结果
+    // ============================================================
+    function copyResult() {
+      var raw = inputArea.value.trim();
+      if (!raw) return;
+
+      try {
+        var parsed = JSON.parse(raw);
+        var formatted = JSON.stringify(parsed, null, 2);
+
+        var done = function () {
+          btnCopy.textContent = t('json.copy_done');
+          btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+          setTimeout(function () {
+            btnCopy.textContent = t('json.btn_copy');
+            btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+          }, 1200);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(formatted).then(done).catch(function () {
+            fallbackCopy(formatted, done);
+          });
+        } else {
+          fallbackCopy(formatted, done);
+        }
+      } catch (e) {
+        var done2 = function () {
+          btnCopy.textContent = t('json.copy_done_raw');
+          btnCopy.classList.add('text-[#FF7D00]', 'border-[#FF7D00]');
+          setTimeout(function () {
+            btnCopy.textContent = t('json.btn_copy');
+            btnCopy.classList.remove('text-[#FF7D00]', 'border-[#FF7D00]');
+          }, 1200);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(raw).then(done2).catch(function () {
+            fallbackCopy(raw, done2);
+          });
+        } else {
+          fallbackCopy(raw, done2);
+        }
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); if (callback) callback(); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    // ============================================================
+    // 清空
+    // ============================================================
+    function clearAll() {
+      inputArea.value = '';
+      outputArea.innerHTML = '';
+      statusEl.innerHTML = '<span class="text-text-muted">' + t('json.status_waiting') + '</span>';
+      outputLabel.textContent = t('json.status_cleared');
+      currentOutputMode = null;
+      updateInputStats();
+      updateOutputStats('');
+      saveInput('');
+      setActiveButton(btnFormat, btnCompress);
+    }
+
+    // ============================================================
+    // 工具函数
+    // ============================================================
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
+    // 按钮切换
+    // ============================================================
+    function setActiveButton(activeBtn, inactiveBtn) {
+      // Active → filled blue
+      activeBtn.classList.add('bg-primary', 'text-white', 'border-none');
+      activeBtn.classList.remove('border', 'border-primary', 'text-primary', 'bg-white');
+      // Inactive → outlined blue
+      inactiveBtn.classList.remove('bg-primary', 'text-white', 'border-none');
+      inactiveBtn.classList.add('border', 'border-primary', 'text-primary', 'bg-white');
+    }
+
+    // ============================================================
+    // 事件绑定
+    // ============================================================
+    function init() {
+      loadInput();
+
+      // 实时校验（防抖）
+      inputArea.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(onInputChange, DEBOUNCE_MS);
+      });
+
+      // 按钮
+      btnFormat.addEventListener('click', function () {
+        formatJSON();
+        setActiveButton(btnFormat, btnCompress);
+      });
+      btnCompress.addEventListener('click', function () {
+        compressJSON();
+        setActiveButton(btnCompress, btnFormat);
+      });
+      btnClear.addEventListener('click', clearAll);
+      btnCopy.addEventListener('click', copyResult);
+
+      // 键盘快捷键 Ctrl+Enter = 格式化
+      inputArea.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          formatJSON();
+          setActiveButton(btnFormat, btnCompress);
+        }
+      });
+
+      // 初始状态
+      if (inputArea.value) {
+        onInputChange();
+        formatJSON();
+        setActiveButton(btnFormat, btnCompress);
+      }
+      updateInputStats();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-i18n-title="about.title">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>关于我们 - Crontab 表达式生成器</title>
-  <meta name="description" content="了解 Crontab 表达式生成器，一款完全免费的在线工具，帮助开发者快速生成 Linux 定时任务表达式，无需注册，开箱即用。">
+  <title>关于我们 - CronBox</title>
+  <meta name="description" content="了解 CronBox，一款完全免费的在线工具，帮助开发者快速生成 Linux 定时任务表达式，无需注册，开箱即用。">
   <meta name="keywords" content="crontab 工具, 在线定时任务, 免费 crontab 生成器, 关于我们">
   <meta name="robots" content="index, follow">
 
@@ -42,12 +42,19 @@
 
   <!-- ========== 顶部导航 ========== -->
   <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
-    <nav class="max-w-[800px] mx-auto flex justify-between items-center px-4 py-3">
-      <a href="../index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">Crontab 表达式生成器</a>
-      <div class="flex gap-4 text-sm">
-        <a href="about.html" class="text-primary font-medium no-underline transition-btn">关于我们</a>
-        <a href="privacy.html" class="text-text-secondary no-underline hover:text-primary transition-btn">隐私政策</a>
-        <a href="contact.html" class="text-text-secondary no-underline hover:text-primary transition-btn">联系我们</a>
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="../index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="../json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="../base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="../url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="../md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="../yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="../xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="../sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="../regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="../diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
       </div>
     </nav>
   </header>
@@ -56,39 +63,39 @@
   <main class="flex-1 max-w-[800px] mx-auto px-4 sm:px-4 md:px-0 w-full py-6 flex flex-col gap-4">
 
     <section class="bg-white rounded-card shadow-card p-6">
-      <h1 class="text-xl font-bold text-text-main mb-4">关于我们</h1>
+      <h1 class="text-xl font-bold text-text-main mb-4" data-i18n="about.title">关于我们</h1>
 
       <div class="flex flex-col gap-4 text-sm leading-relaxed text-text-secondary">
 
         <div>
-          <h2 class="text-base font-semibold text-text-main mb-2">欢迎使用 Crontab 表达式生成器</h2>
-          <p>本网站是一个<strong class="text-text-main">完全免费</strong>的在线 Crontab 表达式生成工具，旨在帮助开发者快速、准确地生成和解析 Linux/Unix 定时任务（Crontab）表达式。</p>
+          <h2 class="text-base font-semibold text-text-main mb-2" data-i18n="about.welcome">欢迎使用 CronBox</h2>
+          <p data-i18n="about.welcome_text">本网站是一个<strong class="text-text-main">完全免费</strong>的在线 Crontab 表达式生成工具，旨在帮助开发者快速、准确地生成和解析 Linux/Unix 定时任务（Crontab）表达式。</p>
         </div>
 
         <div>
-          <h2 class="text-base font-semibold text-text-main mb-2">为什么选择我们？</h2>
+          <h2 class="text-base font-semibold text-text-main mb-2" data-i18n="about.why_title">为什么选择我们？</h2>
           <ul class="list-disc list-inside space-y-1">
-            <li><strong class="text-text-main">无需注册</strong> — 打开即用，无需创建账号或登录</li>
-            <li><strong class="text-text-main">开箱即用</strong> — 直观的可视化界面，无需查阅文档即可上手</li>
-            <li><strong class="text-text-main">完全免费</strong> — 所有功能永久免费，无隐藏收费</li>
-            <li><strong class="text-text-main">本地运行</strong> — 所有操作在您的浏览器中完成，保护您的隐私</li>
-            <li><strong class="text-text-main">专注高效</strong> — 专注于 Crontab 表达式这一个任务，做到极致简洁</li>
+            <li data-i18n="about.why_1"><strong class="text-text-main">无需注册</strong> — 打开即用，无需创建账号或登录</li>
+            <li data-i18n="about.why_2"><strong class="text-text-main">开箱即用</strong> — 直观的可视化界面，无需查阅文档即可上手</li>
+            <li data-i18n="about.why_3"><strong class="text-text-main">完全免费</strong> — 所有功能永久免费，无隐藏收费</li>
+            <li data-i18n="about.why_4"><strong class="text-text-main">本地运行</strong> — 所有操作在您的浏览器中完成，保护您的隐私</li>
+            <li data-i18n="about.why_5"><strong class="text-text-main">专注高效</strong> — 专注于 Crontab 表达式这一个任务，做到极致简洁</li>
           </ul>
         </div>
 
         <div>
-          <h2 class="text-base font-semibold text-text-main mb-2">主要功能</h2>
+          <h2 class="text-base font-semibold text-text-main mb-2" data-i18n="about.features_title">主要功能</h2>
           <ul class="list-disc list-inside space-y-1">
-            <li>可视化选择器：通过三种模式灵活选择每个时间字段的值</li>
-            <li>常用预设：一键生成常见的定时任务表达式</li>
-            <li>反向解析：输入已有表达式，查看其可读的中文解释</li>
-            <li>一键复制：快速复制生成的表达式到剪贴板</li>
+            <li data-i18n="about.features_1">可视化选择器：通过三种模式灵活选择每个时间字段的值</li>
+            <li data-i18n="about.features_2">常用预设：一键生成常见的定时任务表达式</li>
+            <li data-i18n="about.features_3">反向解析：输入已有表达式，查看其可读的中文解释</li>
+            <li data-i18n="about.features_4">一键复制：快速复制生成的表达式到剪贴板</li>
           </ul>
         </div>
 
         <div>
-          <h2 class="text-base font-semibold text-text-main mb-2">适用人群</h2>
-          <p>本工具面向<strong class="text-text-main">开发者、运维工程师、系统管理员</strong>以及任何需要使用 Crontab 定时任务的用户。无论您是 Linux 新手还是资深 DevOps 工程师，都能在这里快速获得正确的 Crontab 表达式。</p>
+          <h2 class="text-base font-semibold text-text-main mb-2" data-i18n="about.audience_title">适用人群</h2>
+          <p data-i18n="about.audience_text">本工具面向<strong class="text-text-main">开发者、运维工程师、系统管理员</strong>以及任何需要使用 Crontab 定时任务的用户。无论您是 Linux 新手还是资深 DevOps 工程师，都能在这里快速获得正确的 Crontab 表达式。</p>
         </div>
 
       </div>
@@ -97,10 +104,15 @@
   </main>
 
   <!-- ========== 底部页脚 ========== -->
-  <footer id="site-footer" class="text-center py-6 text-sm text-text-muted border-0 border-t border-solid border-gray-200">
-    <p>&copy; 2026 Crontab Tool 免费在线工具</p>
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="about.html" class="text-primary font-medium no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
   </footer>
 
-  <script src="../script.js"></script>
+  <script src="../i18n.js"></script>
 </body>
 </html>

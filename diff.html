@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="diff.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线文本对比工具 - 代码/配置差异对比</title>
+  <meta name="description" content="免费在线文本对比工具，左右分栏粘贴两段文本，自动识别新增/删除/修改内容并彩色高亮，适用于代码对比、配置文件对比、文案校对场景。">
+  <meta name="keywords" content="文本对比, 文本差异, diff 工具, 代码对比, 配置文件对比, 在线 diff, 文案校对">
+  <meta name="robots" content="index, follow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF', 'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA', 'text-main': '#1D2129',
+            'text-secondary': '#4E5969', 'text-muted': '#86909C',
+            'success': '#00B42A', 'error': '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-diff {
+      font-family: Consolas, Monaco, 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    textarea::-webkit-scrollbar { width: 6px; height: 6px; }
+    textarea::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    textarea::-webkit-scrollbar-track { background: transparent; }
+    #diff-output::-webkit-scrollbar { width: 8px; height: 8px; }
+    #diff-output::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+    #diff-output::-webkit-scrollbar-track { background: transparent; }
+
+    /* Diff colors */
+    .diff-add        { background: #E6FFEC; }
+    .diff-add strong  { background: #ACF2BD; font-weight: normal; border-radius: 2px; padding: 0 1px; }
+    .diff-del        { background: #FFEBE9; }
+    .diff-del strong  { background: #FDB8C0; font-weight: normal; border-radius: 2px; padding: 0 1px; }
+    .diff-equal      { background: transparent; }
+    .diff-gutter     { user-select: none; color: #86909C; min-width: 40px; text-align: right; padding-right: 12px; }
+    .diff-line-sign  { user-select: none; width: 16px; text-align: center; flex-shrink: 0; font-weight: bold; }
+    .diff-line-add   { background: #E6FFEC; }
+    .diff-line-del   { background: #FFEBE9; }
+    .diff-line-equal { background: transparent; }
+    .diff-line-num   { color: #86909C; min-width: 40px; text-align: right; padding-right: 8px; user-select: none; }
+    /* Hover highlight */
+    .diff-row:hover .diff-line-num { color: #1D2129; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <!-- ========== 标题 + 工具栏 ========== -->
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-3">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="diff.title">在线文本对比工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="diff.subtitle">左右分栏粘贴两段文本，自动逐行对比差异 — 适用于代码对比、配置变更、文案校对</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-compare" class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="diff.btn_compare">对比</button>
+          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="diff.btn_clear">清空</button>
+          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="diff.btn_copy">复制结果</button>
+        </div>
+      </div>
+      <div id="status-bar" class="flex items-center gap-2 text-sm min-h-[28px]">
+        <span class="text-text-muted" data-i18n="diff.status_placeholder">在左右两侧粘贴文本，点击「对比」查看差异</span>
+      </div>
+    </section>
+
+    <!-- ========== 双栏输入区 ========== -->
+    <section class="flex flex-col md:flex-row gap-4 flex-1 min-h-[260px]">
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="diff.left_label">原始文本</h2>
+          <span class="text-xs text-text-muted" data-i18n="diff.left_hint">旧版本 / 原始内容</span>
+        </div>
+        <textarea id="input-left"
+          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-diff text-text-main
+                 focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted min-h-[200px]"
+          data-i18n-placeholder="diff.placeholder_left" placeholder="在此粘贴原始文本（旧版本）..."
+          rows="10"
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-left-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="diff.right_label">修改后文本</h2>
+          <span class="text-xs text-text-muted" data-i18n="diff.right_hint">新版本 / 修改后内容</span>
+        </div>
+        <textarea id="input-right"
+          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-diff text-text-main
+                 focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted min-h-[200px]"
+          data-i18n-placeholder="diff.placeholder_right" placeholder="在此粘贴修改后文本（新版本）..."
+          rows="10"
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-right-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 对比结果区 ========== -->
+    <section class="bg-white rounded-card shadow-card p-4 flex flex-col" id="results-section">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-text-main" data-i18n="diff.result_title">对比结果</h2>
+        <div id="diff-stats-bar" class="flex gap-4 text-xs">
+          <span class="text-text-muted" data-i18n="diff.waiting_compare">等待对比…</span>
+        </div>
+      </div>
+
+      <!-- 统一差异视图 -->
+      <div id="diff-output"
+        class="w-full border border-gray-200 rounded-btn overflow-auto bg-white min-h-[200px] max-h-[600px]"
+        style="font-family: Consolas, Monaco, 'Courier New', monospace; font-size: 13px; line-height: 1.7;">
+        <div class="flex items-center justify-center h-full min-h-[200px] text-text-muted text-sm">
+          <span data-i18n="diff.status_waiting_result">对比结果将在此显示...</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var t = window.t;
+    document.addEventListener('langchange', function () { updAllStats(); doCompare(); });
+
+    // ============================================================
+    // LCS-based Line Diff Algorithm
+    // ============================================================
+
+    /**
+     * Compute diff between two arrays using LCS.
+     * Returns array of {type: 'equal'|'delete'|'insert', items: [...]}
+     * Optimized with reduced memory for large inputs.
+     */
+    function diffLines(linesA, linesB) {
+      var aLen = linesA.length;
+      var bLen = linesB.length;
+
+      // For empty inputs
+      if (aLen === 0 && bLen === 0) return [];
+      if (aLen === 0) return [{ type: 'insert', items: linesB.slice(), lineA: 0, lineB: 0 }];
+      if (bLen === 0) return [{ type: 'delete', items: linesA.slice(), lineA: 0, lineB: 0 }];
+
+      // Build LCS using Hirschberg's algorithm for large inputs?
+      // For simplicity, use standard DP with trimming optimization
+      // Trim common prefix
+      var prefixLen = 0;
+      while (prefixLen < aLen && prefixLen < bLen && linesA[prefixLen] === linesB[prefixLen]) {
+        prefixLen++;
+      }
+
+      // Trim common suffix
+      var suffixLen = 0;
+      while (suffixLen < aLen - prefixLen && suffixLen < bLen - prefixLen &&
+             linesA[aLen - 1 - suffixLen] === linesB[bLen - 1 - suffixLen]) {
+        suffixLen++;
+      }
+
+      var trimA = linesA.slice(prefixLen, aLen - suffixLen);
+      var trimB = linesB.slice(prefixLen, bLen - suffixLen);
+
+      // Compute LCS on trimmed section
+      var lcsData = computeLCS(trimA, trimB);
+
+      // Backtrack to build diff operations
+      var ops = [];
+      var i = trimA.length;
+      var j = trimB.length;
+      var dp = lcsData.dp;
+      var rawOps = []; // temporary: [{type, count}]
+
+      while (i > 0 || j > 0) {
+        if (i > 0 && j > 0 && trimA[i - 1] === trimB[j - 1]) {
+          rawOps.push({ type: 'equal', count: 1 });
+          i--; j--;
+        } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+          rawOps.push({ type: 'insert', count: 1 });
+          j--;
+        } else {
+          rawOps.push({ type: 'delete', count: 1 });
+          i--;
+        }
+      }
+
+      // Reverse to get forward order
+      rawOps.reverse();
+
+      // Merge consecutive same-type operations
+      var mergedOps = [];
+      for (var r = 0; r < rawOps.length; r++) {
+        var ro = rawOps[r];
+        if (mergedOps.length > 0 && mergedOps[mergedOps.length - 1].type === ro.type) {
+          mergedOps[mergedOps.length - 1].count += ro.count;
+        } else {
+          mergedOps.push({ type: ro.type, count: ro.count });
+        }
+      }
+
+      // Build final operations with actual line data
+      var lineANo = prefixLen;
+      var lineBNo = prefixLen;
+      var aIdx = 0;
+      var bIdx = 0;
+
+      for (var m = 0; m < mergedOps.length; m++) {
+        var mo = mergedOps[m];
+        if (mo.type === 'equal') {
+          ops.push({
+            type: 'equal',
+            items: trimA.slice(aIdx, aIdx + mo.count),
+            lineA: lineANo,
+            lineB: lineBNo
+          });
+          aIdx += mo.count;
+          bIdx += mo.count;
+          lineANo += mo.count;
+          lineBNo += mo.count;
+        } else if (mo.type === 'delete') {
+          ops.push({
+            type: 'delete',
+            items: trimA.slice(aIdx, aIdx + mo.count),
+            lineA: lineANo,
+            lineB: lineBNo
+          });
+          aIdx += mo.count;
+          lineANo += mo.count;
+        } else { // insert
+          ops.push({
+            type: 'insert',
+            items: trimB.slice(bIdx, bIdx + mo.count),
+            lineA: lineANo,
+            lineB: lineBNo
+          });
+          bIdx += mo.count;
+          lineBNo += mo.count;
+        }
+      }
+
+      // Merge adjacent delete+insert pairs into "replace" blocks for char-level diff
+      var finalOps = [];
+      for (var f = 0; f < ops.length; f++) {
+        if (ops[f].type === 'delete' && f + 1 < ops.length && ops[f + 1].type === 'insert') {
+          // Check if they're similar enough for char diff
+          var delBlock = ops[f];
+          var insBlock = ops[f + 1];
+          var delItems = delBlock.items;
+          var insItems = insBlock.items;
+          // Pair up lines for char-level diff
+          var paired = [];
+          var maxPairs = Math.max(delItems.length, insItems.length);
+          for (var p = 0; p < maxPairs; p++) {
+            var dl = p < delItems.length ? delItems[p] : '';
+            var il = p < insItems.length ? insItems[p] : '';
+            paired.push({
+              deleted: dl,
+              inserted: il,
+              lineA: delBlock.lineA + p,
+              lineB: insBlock.lineB + p
+            });
+          }
+          finalOps.push({
+            type: 'replace',
+            pairs: paired,
+            lineA: delBlock.lineA,
+            lineB: insBlock.lineB
+          });
+          f++; // skip the insert block
+        } else {
+          finalOps.push(ops[f]);
+        }
+      }
+
+      return finalOps;
+    }
+
+    /**
+     * Compute LCS DP table for arrays a and b.
+     * Returns { dp, lcs } where dp[i][j] = LCS length.
+     * For space efficiency, we only keep 2 rows for large inputs.
+     * But we need the full table for backtracking, so we store it.
+     */
+    function computeLCS(a, b) {
+      var n = a.length;
+      var m = b.length;
+
+      // Cap at reasonable size to prevent memory issues
+      var MAX = 5000;
+      if (n > MAX || m > MAX) {
+        // Fall back to simple line-by-line comparison
+        return computeLCSsimple(a, b, MAX);
+      }
+
+      // Full DP
+      var dp = new Array(n + 1);
+      for (var i = 0; i <= n; i++) {
+        dp[i] = new Array(m + 1);
+        dp[i][0] = 0;
+      }
+      for (var j = 0; j <= m; j++) {
+        dp[0][j] = 0;
+      }
+
+      for (var ii = 1; ii <= n; ii++) {
+        for (var jj = 1; jj <= m; jj++) {
+          if (a[ii - 1] === b[jj - 1]) {
+            dp[ii][jj] = dp[ii - 1][jj - 1] + 1;
+          } else {
+            dp[ii][jj] = Math.max(dp[ii - 1][jj], dp[ii][jj - 1]);
+          }
+        }
+      }
+
+      return { dp: dp, lcsLen: dp[n][m] };
+    }
+
+    /**
+     * Simplified LCS for very large inputs — uses character-hash matching.
+     */
+    function computeLCSsimple(a, b, maxLen) {
+      // Truncate to maxLen
+      var trimA = a.slice(0, Math.min(a.length, maxLen));
+      var trimB = b.slice(0, Math.min(b.length, maxLen));
+      return computeLCS(trimA, trimB);
+    }
+
+    /**
+     * Character-level diff for a pair of lines.
+     * Returns { html: '...' } with <strong> highlighting changed parts.
+     */
+    function charDiffHTML(delLine, insLine) {
+      if (delLine === insLine) {
+        return {
+          delHTML: escHTML(delLine),
+          insHTML: escHTML(insLine)
+        };
+      }
+
+      // Find common prefix
+      var preLen = 0;
+      var maxPre = Math.min(delLine.length, insLine.length);
+      while (preLen < maxPre && delLine[preLen] === insLine[preLen]) preLen++;
+
+      // Find common suffix
+      var sufLen = 0;
+      var delRem = delLine.length - preLen;
+      var insRem = insLine.length - preLen;
+      var maxSuf = Math.min(delRem, insRem);
+      while (sufLen < maxSuf && delLine[delLine.length - 1 - sufLen] === insLine[insLine.length - 1 - sufLen]) sufLen++;
+
+      var preDel = escHTML(delLine.substring(0, preLen));
+      var midDel = escHTML(delLine.substring(preLen, delLine.length - sufLen));
+      var sufDel = escHTML(delLine.substring(delLine.length - sufLen));
+
+      var preIns = escHTML(insLine.substring(0, preLen));
+      var midIns = escHTML(insLine.substring(preLen, insLine.length - sufLen));
+      var sufIns = escHTML(insLine.substring(insLine.length - sufLen));
+
+      return {
+        delHTML: preDel + (midDel ? '<strong>' + midDel + '</strong>' : '') + sufDel,
+        insHTML: preIns + (midIns ? '<strong>' + midIns + '</strong>' : '') + sufIns
+      };
+    }
+
+    // ============================================================
+    // HTML Escaping
+    // ============================================================
+    function escHTML(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
+    // Render Diff Result
+    // ============================================================
+    function renderDiff(ops, linesA, linesB) {
+      if (ops.length === 0) {
+        return { html: '<div class="flex items-center justify-center h-full min-h-[120px] text-text-muted text-sm">两段文本完全相同</div>', stats: { equal: Math.max(linesA.length, linesB.length), added: 0, deleted: 0 } };
+      }
+
+      var html = '';
+      var stats = { added: 0, deleted: 0, equal: 0 };
+      var CONTEXT = 0; // show all lines in unified view
+
+      for (var i = 0; i < ops.length; i++) {
+        var op = ops[i];
+
+        if (op.type === 'equal') {
+          for (var e = 0; e < op.items.length; e++) {
+            var eLineA = op.lineA + e + 1;
+            var eLineB = op.lineB + e + 1;
+            html += '<div class="diff-row flex diff-line-equal hover:bg-gray-50" style="min-height:22px">' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px">' + eLineA + '</span>' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px">' + eLineB + '</span>' +
+              '<span class="flex-shrink-0 text-center" style="width:16px">&nbsp;</span>' +
+              '<span class="flex-1 whitespace-pre-wrap break-all">' + escHTML(op.items[e]) + '</span>' +
+              '</div>';
+            stats.equal++;
+          }
+        } else if (op.type === 'delete') {
+          for (var d = 0; d < op.items.length; d++) {
+            var dLineA = op.lineA + d + 1;
+            html += '<div class="diff-row flex diff-line-del" style="min-height:22px">' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px;color:#F53F3F">' + dLineA + '</span>' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px"></span>' +
+              '<span class="flex-shrink-0 text-center text-[#F53F3F]" style="width:16px">-</span>' +
+              '<span class="flex-1 whitespace-pre-wrap break-all text-[#C92A2A]">' + escHTML(op.items[d]) + '</span>' +
+              '</div>';
+            stats.deleted++;
+          }
+        } else if (op.type === 'insert') {
+          for (var ins = 0; ins < op.items.length; ins++) {
+            var insLineB = op.lineB + ins + 1;
+            html += '<div class="diff-row flex diff-line-add" style="min-height:22px">' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px"></span>' +
+              '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px;color:#00B42A">' + insLineB + '</span>' +
+              '<span class="flex-shrink-0 text-center text-[#00B42A]" style="width:16px">+</span>' +
+              '<span class="flex-1 whitespace-pre-wrap break-all text-[#1B7F3B]">' + escHTML(op.items[ins]) + '</span>' +
+              '</div>';
+            stats.added++;
+          }
+        } else if (op.type === 'replace') {
+          for (var rp = 0; rp < op.pairs.length; rp++) {
+            var pair = op.pairs[rp];
+            var cd = charDiffHTML(pair.deleted, pair.inserted);
+            var rLineA = pair.lineA + 1;
+            var rLineB = pair.lineB + 1;
+
+            // Delete line
+            if (pair.deleted !== '') {
+              html += '<div class="diff-row flex diff-line-del" style="min-height:22px">' +
+                '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px;color:#F53F3F">' + rLineA + '</span>' +
+                '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px"></span>' +
+                '<span class="flex-shrink-0 text-center text-[#F53F3F]" style="width:16px">-</span>' +
+                '<span class="flex-1 whitespace-pre-wrap break-all text-[#C92A2A]">' + cd.delHTML + '</span>' +
+                '</div>';
+              stats.deleted++;
+            }
+            // Insert line
+            if (pair.inserted !== '') {
+              html += '<div class="diff-row flex diff-line-add" style="min-height:22px">' +
+                '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px"></span>' +
+                '<span class="diff-line-num flex-shrink-0 text-right" style="width:44px;padding-right:8px;color:#00B42A">' + rLineB + '</span>' +
+                '<span class="flex-shrink-0 text-center text-[#00B42A]" style="width:16px">+</span>' +
+                '<span class="flex-1 whitespace-pre-wrap break-all text-[#1B7F3B]">' + cd.insHTML + '</span>' +
+                '</div>';
+              stats.added++;
+            }
+          }
+        }
+      }
+
+      return { html: html, stats: stats };
+    }
+
+    // ============================================================
+    // DOM
+    // ============================================================
+    var inputLeft      = document.getElementById('input-left');
+    var inputRight     = document.getElementById('input-right');
+    var inputLeftStats = document.getElementById('input-left-stats');
+    var inputRightStats= document.getElementById('input-right-stats');
+    var diffOutput     = document.getElementById('diff-output');
+    var diffStatsBar   = document.getElementById('diff-stats-bar');
+    var statusBar      = document.getElementById('status-bar');
+    var btnCompare     = document.getElementById('btn-compare');
+    var btnClear       = document.getElementById('btn-clear');
+    var btnCopy        = document.getElementById('btn-copy');
+
+    var STORAGE_LEFT  = 'diff_text_left';
+    var STORAGE_RIGHT = 'diff_text_right';
+
+    var lastDiffResult = { html: '', stats: null };
+
+    function loadInputs() {
+      try {
+        var l = localStorage.getItem(STORAGE_LEFT);
+        if (l) inputLeft.value = l;
+        var r = localStorage.getItem(STORAGE_RIGHT);
+        if (r) inputRight.value = r;
+      } catch(e) {}
+    }
+
+    function saveLeft(v)  { try { localStorage.setItem(STORAGE_LEFT, v); } catch(e) {} }
+    function saveRight(v) { try { localStorage.setItem(STORAGE_RIGHT, v); } catch(e) {} }
+
+    function updStats(el, v) {
+      var c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      el.textContent = t('diff.stats_format', { chars: c, lines: l });
+    }
+
+    function updAllStats() {
+      updStats(inputLeftStats, inputLeft.value);
+      updStats(inputRightStats, inputRight.value);
+    }
+
+    // ============================================================
+    // Actions
+    // ============================================================
+    function doCompare() {
+      var leftText = inputLeft.value;
+      var rightText = inputRight.value;
+
+      if (!leftText && !rightText) {
+        showStatus('warning', t('diff.status_enter_text'));
+        diffOutput.innerHTML = '<div class="flex items-center justify-center h-full min-h-[120px] text-text-muted text-sm">' + t('diff.status_enter_text') + '</div>';
+        diffStatsBar.innerHTML = '<span class="text-text-muted">' + t('diff.status_no_content') + '</span>';
+        lastDiffResult = { html: '', stats: null };
+        return;
+      }
+
+      var linesA = leftText.split('\n');
+      var linesB = rightText.split('\n');
+
+      var startTime = Date.now();
+      var ops;
+      try {
+        ops = diffLines(linesA, linesB);
+      } catch (e) {
+        showStatus('error', t('diff.status_error_compare', { msg: e.message }));
+        return;
+      }
+      var elapsed = Date.now() - startTime;
+
+      var result = renderDiff(ops, linesA, linesB);
+      lastDiffResult = result;
+
+      diffOutput.innerHTML = result.html || '<div class="flex items-center justify-center h-full min-h-[120px] text-text-muted text-sm">' + t('diff.status_identical_text') + '</div>';
+
+      var st = result.stats;
+      if (st) {
+        diffStatsBar.innerHTML =
+          '<span class="inline-flex items-center gap-1 text-[#00B42A] text-xs font-medium">+<b>' + st.added + '</b> ' + t('diff.stat_added') + '</span>' +
+          '<span class="inline-flex items-center gap-1 text-[#F53F3F] text-xs font-medium">-<b>' + st.deleted + '</b> ' + t('diff.stat_deleted') + '</span>' +
+          '<span class="inline-flex items-center gap-1 text-text-muted text-xs"><b>' + st.equal + '</b> ' + t('diff.stat_unchanged') + '</span>';
+        showStatus('success', t('diff.status_compare_result', { elapsed: elapsed, added: st.added, deleted: st.deleted, equal: st.equal }));
+      } else {
+        diffStatsBar.innerHTML = '<span class="text-text-muted text-xs">' + t('diff.status_identical_full') + '</span>';
+        showStatus('info', t('diff.status_identical'));
+      }
+    }
+
+    function doClear() {
+      inputLeft.value = '';
+      inputRight.value = '';
+      diffOutput.innerHTML = '<div class="flex items-center justify-center h-full min-h-[120px] text-text-muted text-sm">' + t('diff.status_waiting_result') + '</div>';
+      diffStatsBar.innerHTML = '<span class="text-text-muted">' + t('diff.waiting_compare') + '</span>';
+      updAllStats();
+      saveLeft('');
+      saveRight('');
+      showStatus('info', t('diff.status_cleared'));
+      lastDiffResult = { html: '', stats: null };
+    }
+
+    function doCopy() {
+      if (!lastDiffResult.stats) {
+        showStatus('warning', t('diff.status_no_result_copy'));
+        return;
+      }
+
+      var lines = [];
+      lines.push(t('diff.result_copy_title'));
+      lines.push(t('diff.stat_added') + ': +' + lastDiffResult.stats.added + ' | ' + t('diff.stat_deleted') + ': -' + lastDiffResult.stats.deleted + ' | ' + t('diff.stat_unchanged') + ': ' + lastDiffResult.stats.equal);
+      lines.push('');
+
+      // Extract plain text from HTML
+      var div = document.createElement('div');
+      div.innerHTML = lastDiffResult.html;
+      var rows = div.querySelectorAll('.diff-row');
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var sign = row.querySelector('.flex-shrink-0.text-center');
+        var signText = sign ? sign.textContent.trim() : ' ';
+        // Only include added/deleted lines, skip unchanged for cleaner copy
+        var content = row.querySelector('.flex-1');
+        if (content) {
+          lines.push(signText + ' ' + content.textContent);
+        }
+      }
+
+      var copyText = lines.join('\n');
+      var done = function () {
+        var orig = btnCopy.textContent;
+        btnCopy.textContent = t('diff.copy_done');
+        btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+        setTimeout(function () {
+          btnCopy.textContent = orig;
+          btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+        }, 1200);
+        showStatus('success', t('diff.status_copied'));
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(done).catch(function () { fallbackCopy(copyText, done); });
+      } else { fallbackCopy(copyText, done); }
+    }
+
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement('textarea'); ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function showStatus(type, msg) {
+      var icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+      var colors = { success: 'text-[#00B42A]', error: 'text-[#F53F3F]', warning: 'text-[#FF7D00]', info: 'text-text-muted' };
+      statusBar.innerHTML = '<span class="inline-flex items-center gap-1 ' + (colors[type] || '') + ' text-sm font-medium">' +
+        (icons[type] || '') + ' ' + escHTML(msg) + '</span>';
+    }
+
+    // ============================================================
+    // Debounce for auto-compare
+    // ============================================================
+    var compareTimer = null;
+    function debounceCompare() {
+      if (compareTimer) clearTimeout(compareTimer);
+      compareTimer = setTimeout(doCompare, 400);
+    }
+
+    // ============================================================
+    // Init
+    // ============================================================
+    function init() {
+      loadInputs();
+      updAllStats();
+
+      inputLeft.addEventListener('input', function () {
+        updStats(inputLeftStats, inputLeft.value);
+        saveLeft(inputLeft.value);
+        debounceCompare();
+      });
+      inputRight.addEventListener('input', function () {
+        updStats(inputRightStats, inputRight.value);
+        saveRight(inputRight.value);
+        debounceCompare();
+      });
+
+      btnCompare.addEventListener('click', doCompare);
+      btnClear.addEventListener('click', doClear);
+      btnCopy.addEventListener('click', doCopy);
+
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          doCompare();
+        }
+      });
+
+      // Auto-compare on load if both sides have content
+      if (inputLeft.value || inputRight.value) {
+        setTimeout(doCompare, 100);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else { init(); }
+  })();
+  </script>
+</body>
+</html>

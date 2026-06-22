@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-i18n-title="sql.title">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL 在线格式化工具 - SQL 美化压缩高亮</title>
+  <meta name="description" content="免费在线 SQL 格式化工具，支持 MySQL 主流语法美化排版、压缩精简、关键字高亮，适配查询语句、建表语句、批量执行 SQL，无需注册开箱即用。">
+  <meta name="keywords" content="SQL 格式化, SQL 压缩, SQL 美化, SQL 高亮, MySQL 格式化, SQL 在线工具">
+  <meta name="robots" content="index, follow">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:  '#165DFF', 'primary-hover': '#1452E5',
+            'bg-page': '#F7F8FA', 'text-main': '#1D2129',
+            'text-secondary': '#4E5969', 'text-muted': '#86909C',
+            'success': '#00B42A', 'error': '#F53F3F',
+          },
+          borderRadius: { 'card': '8px', 'btn': '6px' },
+          boxShadow:   { 'card': '0 2px 8px rgba(0,0,0,0.06)' },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .transition-btn { transition: all 0.2s ease; }
+    button:active { transform: scale(0.97); }
+    .font-mono-sql { font-family: Consolas, Monaco, 'Courier New', monospace; font-size: 13px; line-height: 1.7; }
+    #output-area::-webkit-scrollbar, #input-area::-webkit-scrollbar { width: 6px; height: 6px; }
+    #output-area::-webkit-scrollbar-thumb, #input-area::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    #output-area::-webkit-scrollbar-track, #input-area::-webkit-scrollbar-track  { background: transparent; }
+  </style>
+</head>
+<body class="bg-bg-page min-h-screen flex flex-col text-text-main">
+
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
+      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <div class="flex gap-2 text-sm items-center">
+        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="flex-1 max-w-[1200px] mx-auto px-4 w-full py-6 flex flex-col gap-4">
+
+    <section class="bg-white rounded-card shadow-card p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="sql.title">SQL 在线格式化工具</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="sql.subtitle">SQL 缩进美化 / 压缩精简 / 关键字高亮 — 支持 MySQL 主流语法、建表语句、批量 SQL</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="btn-format"   class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="sql.btn_format">格式化</button>
+          <button id="btn-compress" class="min-w-[88px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="sql.btn_compress">压缩</button>
+          <button id="btn-clear"    class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="sql.btn_clear">清空</button>
+          <button id="btn-copy"     class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="sql.btn_copy">复制结果</button>
+        </div>
+      </div>
+
+      <div id="status-bar" class="flex items-center gap-2 text-sm min-h-[28px]">
+        <span class="text-text-muted" data-i18n="sql.status_placeholder">请粘贴 SQL 语句</span>
+      </div>
+    </section>
+
+    <section class="flex flex-col md:flex-row gap-4 flex-1 min-h-[500px]">
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="sql.input_label">输入</h2>
+          <span class="text-xs text-text-muted" data-i18n="sql.input_hint">SQL</span>
+        </div>
+        <textarea id="input-area"
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-sql text-text-main
+                 focus:outline-none focus:border-primary transition-btn placeholder:text-text-muted"
+          data-i18n-placeholder="sql.status_placeholder" placeholder="在此粘贴 SQL 语句...&#10;支持：SELECT / INSERT / UPDATE / DELETE / CREATE TABLE 等"
+          spellcheck="false"></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+
+      <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="sql.output_label">结果</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="sql.status_waiting">等待操作…</span>
+        </div>
+        <textarea id="output-area" readonly
+          class="flex-1 w-full resize-none border border-gray-200 rounded-btn p-4 font-mono-sql text-text-main
+                 bg-gray-50 focus:outline-none min-h-[200px] placeholder:text-text-muted"
+          data-i18n-placeholder="sql.status_waiting" placeholder="格式化或压缩结果将显示在这里..."></textarea>
+        <div class="flex items-center justify-between mt-2">
+          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+    <div class="flex justify-center gap-6 mb-3">
+      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+    </div>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var t = window.t;
+    var _currentStatus = null;
+    document.addEventListener('langchange', function () { updInputStats(); updOutputStats(outputArea.value); if (_currentStatus) showStatus(_currentStatus.type, t(_currentStatus.key, _currentStatus.params)); updateOutputLabel(); });
+
+    // ============================================================
+    // SQL Tokenizer
+    // ============================================================
+    var TOK_KEYWORD      = 'keyword';
+    var TOK_IDENTIFIER   = 'identifier';
+    var TOK_STRING       = 'string';
+    var TOK_NUMBER       = 'number';
+    var TOK_OPERATOR     = 'operator';
+    var TOK_PUNCTUATION  = 'punctuation';
+    var TOK_COMMENT_LINE = 'comment_line';
+    var TOK_COMMENT_BLOCK= 'comment_block';
+    var TOK_WHITESPACE   = 'whitespace';
+    var TOK_PAREN        = 'paren';
+
+    // Comprehensive MySQL keyword set
+    var KEYWORDS = new Set([
+      'SELECT', 'FROM', 'WHERE', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
+      'CREATE', 'ALTER', 'DROP', 'TABLE', 'INDEX', 'VIEW', 'TRIGGER', 'PROCEDURE', 'FUNCTION',
+      'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'CROSS', 'FULL', 'ON', 'AS', 'DISTINCT',
+      'AND', 'OR', 'NOT', 'IN', 'LIKE', 'BETWEEN', 'IS', 'NULL', 'EXISTS', 'ANY', 'ALL', 'SOME',
+      'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'UNION', 'EXCEPT', 'INTERSECT',
+      'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'IF', 'ELSEIF', 'THEN', 'WHILE', 'DO', 'LOOP',
+      'REPEAT', 'UNTIL', 'FOR', 'RETURN', 'DECLARE', 'CURSOR', 'OPEN', 'CLOSE', 'FETCH',
+      'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES', 'CONSTRAINT', 'DEFAULT', 'CHECK', 'UNIQUE',
+      'CASCADE', 'RESTRICT', 'AUTO_INCREMENT', 'AUTOINCREMENT',
+      'INT', 'INTEGER', 'BIGINT', 'SMALLINT', 'TINYINT', 'MEDIUMINT', 'FLOAT', 'DOUBLE',
+      'DECIMAL', 'NUMERIC', 'CHAR', 'VARCHAR', 'TEXT', 'TINYTEXT', 'MEDIUMTEXT', 'LONGTEXT',
+      'BLOB', 'TINYBLOB', 'MEDIUMBLOB', 'LONGBLOB', 'DATE', 'DATETIME', 'TIMESTAMP',
+      'TIME', 'YEAR', 'ENUM', 'SET', 'BOOLEAN', 'BOOL', 'JSON', 'GEOMETRY', 'POINT',
+      'ENGINE', 'CHARSET', 'COLLATE', 'COMMENT', 'ROW_FORMAT', 'PARTITION',
+      'ASC', 'DESC', 'ASCENDING', 'DESCENDING',
+      'GRANT', 'REVOKE', 'PRIVILEGES', 'TO', 'WITH', 'OPTION',
+      'BEGIN', 'COMMIT', 'ROLLBACK', 'SAVEPOINT', 'TRANSACTION',
+      'TRUNCATE', 'RENAME', 'REPLACE', 'MERGE', 'USE', 'SHOW', 'DESCRIBE', 'EXPLAIN', 'ANALYZE',
+      'ADD', 'COLUMN', 'MODIFY', 'CHANGE', 'AFTER', 'FIRST',
+      'COUNT', 'SUM', 'AVG', 'MIN', 'MAX', 'COALESCE', 'CONCAT', 'SUBSTRING', 'TRIM', 'LENGTH',
+      'NOW', 'CURDATE', 'CURTIME', 'DATE_FORMAT', 'DATEDIFF', 'TIMESTAMPDIFF',
+      'IFNULL', 'NULLIF', 'CAST', 'CONVERT', 'COLLATION',
+      'OVER', 'PARTITION', 'ROWS', 'RANGE', 'UNBOUNDED', 'PRECEDING', 'FOLLOWING', 'CURRENT', 'ROW',
+      'RECURSIVE', 'WITHIN', 'SCHEMA', 'DATABASE', 'TABLES', 'COLUMNS', 'STATUS', 'VARIABLES',
+      'TEMPORARY', 'IF', 'SCHEMAS', 'DATABASES', 'FULLTEXT', 'SPATIAL',
+    ]);
+
+    // Multi-word keywords (checked first to avoid splitting)
+    var MULTI_WORD_KEYWORDS = [
+      'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'CROSS JOIN', 'FULL JOIN',
+      'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN',
+      'ORDER BY', 'GROUP BY', 'INSERT INTO', 'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE',
+      'CREATE INDEX', 'DROP INDEX', 'CREATE VIEW', 'DROP VIEW',
+      'PRIMARY KEY', 'FOREIGN KEY', 'AUTO_INCREMENT', 'NOT NULL',
+      'DEFAULT NULL', 'DEFAULT 0', 'DEFAULT 1', 'DEFAULT CURRENT_TIMESTAMP',
+      'ON DELETE', 'ON UPDATE', 'NO ACTION', 'SET NULL', 'CASCADE',
+      'IF NOT EXISTS', 'IF EXISTS', 'ROW FORMAT', 'CHARACTER SET',
+      'UNSIGNED', 'SIGNED', 'ZEROFILL',
+    ];
+
+    // Clause-starting keywords (trigger newline + indent)
+    var CLAUSE_STARTERS = new Set([
+      'SELECT', 'FROM', 'WHERE', 'AND', 'OR',
+      'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE',
+      'CREATE', 'ALTER', 'DROP', 'TRUNCATE', 'RENAME',
+      'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'OUTER JOIN', 'CROSS JOIN', 'FULL JOIN',
+      'LEFT OUTER JOIN', 'RIGHT OUTER JOIN', 'FULL OUTER JOIN',
+      'JOIN', 'ON',
+      'ORDER BY', 'GROUP BY', 'HAVING', 'LIMIT', 'OFFSET',
+      'UNION', 'UNION ALL', 'EXCEPT', 'INTERSECT',
+      'WHEN', 'ELSE', 'THEN', 'CASE', 'END',
+      'BEGIN', 'COMMIT', 'ROLLBACK',
+      'PRIMARY KEY', 'FOREIGN KEY', 'CONSTRAINT', 'INDEX', 'UNIQUE', 'CHECK',
+      'GRANT', 'REVOKE',
+    ]);
+
+    // Sub-clause keywords (indent one more level within a clause)
+    var SUB_CLAUSE_STARTERS = new Set([
+      'WHEN', 'ELSE', 'THEN',
+    ]);
+
+    // Keywords after which comma-separated items should be indented
+    var COLUMN_LIST_STARTERS = new Set([
+      'SELECT', 'GROUP BY', 'ORDER BY',
+    ]);
+
+    function isKeyword(word) {
+      return KEYWORDS.has(word.toUpperCase());
+    }
+
+    function isClauseStarter(word) {
+      return CLAUSE_STARTERS.has(word.toUpperCase());
+    }
+
+    // ============================================================
+    // SQL Tokenize — state machine
+    // ============================================================
+    function tokenizeSQL(sql) {
+      var tokens = [];
+      var i = 0;
+      var len = sql.length;
+
+      while (i < len) {
+        var ch = sql[i];
+
+        // Whitespace
+        if (/\s/.test(ch)) {
+          var wsStart = i;
+          while (i < len && /\s/.test(sql[i])) i++;
+          tokens.push({ type: TOK_WHITESPACE, value: sql.substring(wsStart, i) });
+          continue;
+        }
+
+        // Line comment --
+        if (ch === '-' && sql[i + 1] === '-') {
+          var cmtStart = i;
+          i += 2;
+          // Optional space after --
+          if (i < len && sql[i] === ' ') i++;
+          while (i < len && sql[i] !== '\n' && sql[i] !== '\r') i++;
+          tokens.push({ type: TOK_COMMENT_LINE, value: sql.substring(cmtStart, i) });
+          continue;
+        }
+
+        // Block comment /* */
+        if (ch === '/' && sql[i + 1] === '*') {
+          var bcStart = i;
+          i += 2;
+          while (i < len && !(sql[i] === '*' && sql[i + 1] === '/')) i++;
+          if (i < len) i += 2; // skip */
+          tokens.push({ type: TOK_COMMENT_BLOCK, value: sql.substring(bcStart, i) });
+          continue;
+        }
+
+        // Hash comment #
+        if (ch === '#') {
+          var hcStart = i;
+          while (i < len && sql[i] !== '\n' && sql[i] !== '\r') i++;
+          tokens.push({ type: TOK_COMMENT_LINE, value: sql.substring(hcStart, i) });
+          continue;
+        }
+
+        // String literal 'xxx' or "xxx" (MySQL allows both)
+        if (ch === "'" || ch === '"') {
+          var quote = ch;
+          var strStart = i;
+          i++;
+          while (i < len) {
+            if (sql[i] === '\\' && i + 1 < len) { i += 2; continue; }
+            if (sql[i] === quote) {
+              if (quote === "'" && sql[i + 1] === "'") { i += 2; continue; } // escaped quote ''
+              if (quote === '"' && sql[i + 1] === '"') { i += 2; continue; } // escaped quote ""
+              i++;
+              break;
+            }
+            i++;
+          }
+          tokens.push({ type: TOK_STRING, value: sql.substring(strStart, i) });
+          continue;
+        }
+
+        // Backtick identifier `xxx`
+        if (ch === '`') {
+          var btStart = i;
+          i++;
+          while (i < len && sql[i] !== '`') i++;
+          if (i < len) i++; // closing backtick
+          tokens.push({ type: TOK_IDENTIFIER, value: sql.substring(btStart, i) });
+          continue;
+        }
+
+        // Number (including decimals and scientific notation)
+        if (/[0-9]/.test(ch) || (ch === '.' && i + 1 < len && /[0-9]/.test(sql[i + 1]))) {
+          var numStart = i;
+          if (ch === '.') i++;
+          while (i < len && /[0-9]/.test(sql[i])) i++;
+          if (i < len && (sql[i] === '.' || sql[i] === 'e' || sql[i] === 'E')) {
+            if (sql[i] === '.') { i++; while (i < len && /[0-9]/.test(sql[i])) i++; }
+            if (sql[i] === 'e' || sql[i] === 'E') {
+              i++;
+              if (sql[i] === '+' || sql[i] === '-') i++;
+              while (i < len && /[0-9]/.test(sql[i])) i++;
+            }
+          }
+          tokens.push({ type: TOK_NUMBER, value: sql.substring(numStart, i) });
+          continue;
+        }
+
+        // Operators (multi-char first)
+        if ('<>!=|&^~+-*/%'.indexOf(ch) !== -1) {
+          var opStart = i;
+          if ((ch === '<' && sql[i + 1] === '>') ||
+              (ch === '<' && sql[i + 1] === '=') ||
+              (ch === '>' && sql[i + 1] === '=') ||
+              (ch === '!' && sql[i + 1] === '=') ||
+              (ch === '|' && sql[i + 1] === '|') ||
+              (ch === '&' && sql[i + 1] === '&')) {
+            i += 2;
+          } else {
+            i++;
+          }
+          tokens.push({ type: TOK_OPERATOR, value: sql.substring(opStart, i) });
+          continue;
+        }
+
+        // Parentheses
+        if (ch === '(' || ch === ')') {
+          tokens.push({ type: TOK_PAREN, value: ch });
+          i++;
+          continue;
+        }
+
+        // Punctuation
+        if (',.;:'.indexOf(ch) !== -1) {
+          tokens.push({ type: TOK_PUNCTUATION, value: ch });
+          i++;
+          continue;
+        }
+
+        // Identifier (starts with letter or underscore)
+        if (/[a-zA-Z_]/.test(ch)) {
+          var idStart = i;
+          while (i < len && /[a-zA-Z0-9_$]/.test(sql[i])) i++;
+          var word = sql.substring(idStart, i);
+
+          // Check if this starts a multi-word keyword
+          var foundMulti = false;
+          for (var m = 0; m < MULTI_WORD_KEYWORDS.length; m++) {
+            var mwk = MULTI_WORD_KEYWORDS[m];
+            var mwkParts = mwk.split(' ');
+            if (word.toUpperCase() === mwkParts[0].toUpperCase()) {
+              // Try to match remaining parts
+              var savedI = i;
+              var matched = true;
+              for (var p = 1; p < mwkParts.length; p++) {
+                // Skip whitespace
+                while (i < len && /\s/.test(sql[i])) i++;
+                var partStart = i;
+                while (i < len && /[a-zA-Z0-9_$]/.test(sql[i])) i++;
+                var part = sql.substring(partStart, i);
+                if (part.toUpperCase() !== mwkParts[p].toUpperCase()) {
+                  matched = false;
+                  break;
+                }
+              }
+              if (matched) {
+                // Re-check for trailing characters that might indicate it's part of a longer word
+                // e.g. "LEFT JOIN" should match but "LEFT JOINED" should not
+                // Actually, since we tokenize by word boundaries, "LEFT JOIN" followed by whitespace/punctuation is correct
+                tokens.push({ type: TOK_KEYWORD, value: sql.substring(idStart, i) });
+                foundMulti = true;
+                break;
+              } else {
+                i = savedI;
+              }
+            }
+          }
+
+          if (!foundMulti) {
+            var type = isKeyword(word) ? TOK_KEYWORD : TOK_IDENTIFIER;
+            tokens.push({ type: type, value: word });
+          }
+          continue;
+        }
+
+        // Unknown character — treat as punctuation
+        tokens.push({ type: TOK_PUNCTUATION, value: ch });
+        i++;
+      }
+
+      return tokens;
+    }
+
+    // ============================================================
+    // SQL Formatter — indent and beautify
+    // ============================================================
+    function formatSQL(sql) {
+      var tokens = tokenizeSQL(sql);
+      var result = [];
+      var indent = 0;
+      var INDENT = '  ';
+      var lineStart = true;   // Are we at the start of a new line?
+      var currentLine = '';   // Current line being built
+      var prevToken = null;   // Previous non-whitespace token
+      var parenDepth = 0;
+      var inColumnList = false; // Inside SELECT/GROUP BY/ORDER BY column list
+      var clauseIndent = 0;    // Extra indent for the current clause body
+      var pendingNewline = false;
+
+      // Helper: flush current line to result
+      function flushLine() {
+        if (currentLine.trim()) {
+          result.push(currentLine.replace(/\s+$/, ''));
+        } else if (currentLine.length === 0 && result.length > 0 && result[result.length - 1] === '') {
+          // Skip duplicate blank lines
+        } else if (currentLine.length === 0) {
+          result.push('');
+        }
+        currentLine = '';
+        lineStart = true;
+      }
+
+      // Helper: ensure indent on current line
+      function ensureIndent(level) {
+        if (lineStart && currentLine.length === 0) {
+          currentLine = spaces(level * 2);
+        }
+      }
+
+      // Helper: append text to current line
+      function append(text) {
+        if (lineStart && currentLine.length === 0) {
+          currentLine = spaces(indent * 2);
+          lineStart = false;
+        }
+        currentLine += text;
+        lineStart = false;
+      }
+
+      // Check token type ignoring whitespace
+      function prevNonWSType() {
+        for (var t = tokens.length - 1; t >= 0; t--) {
+          if (tokens[t].type !== TOK_WHITESPACE && tokens[t] !== undefined) {
+            // Actually we need to look backward from current position
+            break;
+          }
+        }
+        return prevToken ? prevToken.type : null;
+      }
+
+      // Check if a keyword value (upper) is in a set
+      function kwIn(set, val) {
+        return set.has(val.toUpperCase());
+      }
+
+      for (var idx = 0; idx < tokens.length; idx++) {
+        var tok = tokens[idx];
+
+        // Skip whitespace tokens — we control spacing ourselves
+        if (tok.type === TOK_WHITESPACE) continue;
+
+        // Handle comments
+        if (tok.type === TOK_COMMENT_LINE) {
+          ensureIndent(indent);
+          if (currentLine.trim()) {
+            append('  ');
+          }
+          append(tok.value);
+          flushLine();
+          prevToken = tok;
+          continue;
+        }
+
+        if (tok.type === TOK_COMMENT_BLOCK) {
+          // Inline block comment
+          if (!lineStart && currentLine.trim()) {
+            append('  ');
+          }
+          ensureIndent(indent);
+          append(tok.value);
+          // If block comment contains newlines, flush and adjust
+          if (tok.value.indexOf('\n') !== -1) {
+            flushLine();
+          }
+          prevToken = tok;
+          continue;
+        }
+
+        var upper = tok.value.toUpperCase();
+
+        // === Parenthesis handling ===
+        if (tok.type === TOK_PAREN && tok.value === '(') {
+          // Space before ( only after identifiers/strings/numbers/closing-parens (not after keywords)
+          if (!lineStart && prevToken && (prevToken.type === TOK_IDENTIFIER || prevToken.type === TOK_STRING || prevToken.type === TOK_NUMBER || prevToken.value === ')')) {
+            append(' ');
+          }
+          ensureIndent(indent);
+          append('(');
+          parenDepth++;
+          prevToken = tok;
+          continue;
+        }
+
+        if (tok.type === TOK_PAREN && tok.value === ')') {
+          parenDepth--;
+          append(tok.value);
+          prevToken = tok;
+          continue;
+        }
+
+        // === Punctuation ===
+        if (tok.type === TOK_PUNCTUATION && tok.value === ',') {
+          append(',');
+          // In column lists, newline after comma
+          if (inColumnList && parenDepth === 0) {
+            flushLine();
+            indent = clauseIndent;
+          } else if (parenDepth > 0) {
+            // Inside function arguments, just space
+            // stay on same line
+          } else {
+            // Generally, comma in VALUES or SET: newline
+            // We'll handle via the clause context
+          }
+          prevToken = tok;
+          continue;
+        }
+
+        if (tok.type === TOK_PUNCTUATION && tok.value === ';') {
+          append(';');
+          flushLine();
+          indent = 0;
+          clauseIndent = 0;
+          inColumnList = false;
+          if (idx + 1 < tokens.length) {
+            flushLine(); // blank line between statements
+          }
+          prevToken = tok;
+          continue;
+        }
+
+        if (tok.type === TOK_PUNCTUATION && tok.value === '.') {
+          append('.');
+          prevToken = tok;
+          continue;
+        }
+
+        // === Keywords ===
+        if (tok.type === TOK_KEYWORD) {
+          var kwUpper = upper;
+
+          // Clause starters: newline + indent
+          if (isClauseStarter(kwUpper)) {
+            // Special handling for AND/OR within WHERE — they're clause starters
+            // but don't increase indent
+
+            if (upper === 'AND' || upper === 'OR') {
+              // AND/OR always start a new line within their clause
+              flushLine();
+              indent = clauseIndent > 0 ? clauseIndent : 1;
+              ensureIndent(indent);
+              append(kwUpper);
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'UNION' || upper === 'EXCEPT' || upper === 'INTERSECT') {
+              // Next token might be ALL
+              flushLine();
+              flushLine(); // blank line before UNION
+              indent = 0;
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = 0;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'UNION ALL') {
+              flushLine();
+              flushLine();
+              indent = 0;
+              ensureIndent(indent);
+              append('UNION ALL');
+              clauseIndent = 0;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'SELECT') {
+              if (lineStart && currentLine.length === 0) {
+                ensureIndent(indent);
+              } else {
+                flushLine();
+                ensureIndent(indent);
+              }
+              append('SELECT');
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = true;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'FROM' || upper === 'WHERE' || upper === 'HAVING') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'GROUP BY' || upper === 'ORDER BY') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = true;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'LIMIT' || upper === 'OFFSET') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper.indexOf('JOIN') !== -1 && upper !== 'JOIN') {
+              // LEFT JOIN, RIGHT JOIN, INNER JOIN, etc.
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'JOIN') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append('JOIN');
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'ON') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append('ON');
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'WHEN') {
+              indent = Math.max(0, indent);
+              flushLine();
+              ensureIndent(indent);
+              append('WHEN');
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'THEN' || upper === 'ELSE') {
+              indent = Math.max(0, clauseIndent > 0 ? clauseIndent - 1 : 0);
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'END') {
+              indent = Math.max(0, indent - 1);
+              flushLine();
+              ensureIndent(indent);
+              append('END');
+              clauseIndent = indent;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'INSERT' || upper === 'UPDATE' || upper === 'DELETE') {
+              if (!lineStart || currentLine.trim()) flushLine();
+              indent = 0;
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = 1;
+              indent = clauseIndent;
+              inColumnList = false;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'INTO' || upper === 'VALUES') {
+              indent = clauseIndent > 0 ? clauseIndent - 1 : 0;
+              flushLine();
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              inColumnList = (upper === 'VALUES');
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'SET') {
+              indent = clauseIndent > 0 ? clauseIndent - 1 : 0;
+              flushLine();
+              ensureIndent(indent);
+              append('SET');
+              clauseIndent = indent + 1;
+              indent = clauseIndent;
+              prevToken = tok;
+              continue;
+            }
+
+            if (upper === 'CREATE' || upper === 'ALTER' || upper === 'DROP' || upper === 'TRUNCATE') {
+              if (!lineStart || currentLine.trim()) flushLine();
+              indent = 0;
+              ensureIndent(indent);
+              append(kwUpper);
+              clauseIndent = 1;
+              indent = clauseIndent;
+              prevToken = tok;
+              continue;
+            }
+
+            // Default for other clause starters
+            flushLine();
+            ensureIndent(indent);
+            append(kwUpper);
+            clauseIndent = indent + 1;
+            indent = clauseIndent;
+            prevToken = tok;
+            continue;
+          }
+
+          // Regular keyword — capitalize and append
+          if (!lineStart && prevToken && prevToken.type !== TOK_PUNCTUATION && prevToken.value !== '(') {
+            append(' ');
+          }
+          ensureIndent(indent);
+          append(kwUpper);
+          prevToken = tok;
+          continue;
+        }
+
+        // === Identifiers, Strings, Numbers ===
+        if (tok.type === TOK_IDENTIFIER || tok.type === TOK_STRING || tok.type === TOK_NUMBER || tok.type === TOK_OPERATOR) {
+          if (!lineStart && prevToken) {
+            var pv = prevToken.value;
+            var pt = prevToken.type;
+            // No space before certain punctuation
+            if (pv === '(' || pv === '.') {
+              // no space
+            } else if (pt === TOK_OPERATOR && tok.type !== TOK_OPERATOR) {
+              append(' ');
+            } else if (tok.type === TOK_OPERATOR) {
+              append(' ');
+            } else if (pt !== TOK_OPERATOR && pv !== '(' && pv !== '.') {
+              append(' ');
+            }
+          }
+          ensureIndent(indent);
+          append(tok.value);
+          prevToken = tok;
+          continue;
+        }
+
+        // Catch-all for any other tokens
+        if (!lineStart && prevToken && prevToken.value !== '(' && prevToken.value !== '.') {
+          append(' ');
+        }
+        ensureIndent(indent);
+        append(tok.value);
+        prevToken = tok;
+      }
+
+      // Flush remaining line
+      if (currentLine.trim()) {
+        result.push(currentLine.replace(/\s+$/, ''));
+      }
+
+      // Trim trailing blank lines
+      while (result.length > 0 && result[result.length - 1].trim() === '') {
+        result.pop();
+      }
+
+      return result.join('\n');
+    }
+
+    function spaces(n) {
+      return new Array(Math.max(0, n) + 1).join(' ');
+    }
+
+    // ============================================================
+    // SQL Compressor — remove unnecessary whitespace
+    // ============================================================
+    function compressSQL(sql) {
+      var tokens = tokenizeSQL(sql);
+      var parts = [];
+      var prevType = null;
+      var prevValue = '';
+
+      for (var i = 0; i < tokens.length; i++) {
+        var tok = tokens[i];
+
+        // Skip comments in compressed output
+        if (tok.type === TOK_COMMENT_LINE || tok.type === TOK_COMMENT_BLOCK) continue;
+
+        // Skip excessive whitespace
+        if (tok.type === TOK_WHITESPACE) {
+          if (prevType && prevType !== TOK_WHITESPACE && prevType !== TOK_PUNCTUATION && prevValue !== '(') {
+            // Check if next non-whitespace token would need space
+            var nextTok = null;
+            for (var j = i + 1; j < tokens.length; j++) {
+              if (tokens[j].type !== TOK_WHITESPACE) { nextTok = tokens[j]; break; }
+            }
+            if (nextTok && nextTok.value !== ')' && nextTok.value !== ',' && nextTok.value !== ';' && nextTok.value !== '.') {
+              parts.push(' ');
+            }
+          }
+          continue;
+        }
+
+        // No space before punctuation
+        if (tok.type === TOK_PUNCTUATION) {
+          if (tok.value === ',' || tok.value === ';') {
+            // Remove trailing space before comma/semicolon
+            while (parts.length > 0 && parts[parts.length - 1] === ' ') parts.pop();
+          }
+        }
+
+        // No space before closing paren
+        if (tok.value === ')' && parts.length > 0 && parts[parts.length - 1] === ' ') {
+          parts.pop();
+        }
+
+        // Add appropriate spacing
+        if (prevType === TOK_KEYWORD && (tok.type === TOK_KEYWORD || tok.type === TOK_IDENTIFIER || tok.type === TOK_NUMBER || tok.type === TOK_STRING)) {
+          if (parts.length > 0 && parts[parts.length - 1] !== ' ' && parts[parts.length - 1] !== '(') {
+            parts.push(' ');
+          }
+        } else if (prevType === TOK_IDENTIFIER && tok.type === TOK_IDENTIFIER && parts.length > 0 && parts[parts.length - 1] !== ' ' && parts[parts.length - 1] !== '.') {
+          parts.push(' ');
+        } else if (prevType === TOK_NUMBER && tok.type === TOK_IDENTIFIER && parts.length > 0 && parts[parts.length - 1] !== ' ') {
+          parts.push(' ');
+        } else if (prevType === TOK_STRING && tok.type === TOK_IDENTIFIER && parts.length > 0 && parts[parts.length - 1] !== ' ') {
+          parts.push(' ');
+        } else if (prevValue === ')' && tok.type === TOK_IDENTIFIER && parts.length > 0 && parts[parts.length - 1] !== ' ') {
+          parts.push(' ');
+        }
+
+        // Capitalize keywords in compressed output too
+        if (tok.type === TOK_KEYWORD) {
+          parts.push(tok.value.toUpperCase());
+        } else {
+          parts.push(tok.value);
+        }
+
+        prevType = tok.type;
+        prevValue = tok.value;
+      }
+
+      // Clean up double spaces and trailing spaces
+      var result = parts.join('').replace(/\s{2,}/g, ' ').trim();
+      return result;
+    }
+
+    // ============================================================
+    // DOM
+    // ============================================================
+    var inputArea   = document.getElementById('input-area');
+    var outputArea  = document.getElementById('output-area');
+    var statusBar   = document.getElementById('status-bar');
+    var inputStats  = document.getElementById('input-stats');
+    var outputStats = document.getElementById('output-stats');
+    var outputLabel = document.getElementById('output-label');
+    var btnFormat   = document.getElementById('btn-format');
+    var btnCompress = document.getElementById('btn-compress');
+    var btnClear    = document.getElementById('btn-clear');
+    var btnCopy     = document.getElementById('btn-copy');
+
+    var STORAGE_KEY = 'sql_input';
+    function loadInput() { try { var s = localStorage.getItem(STORAGE_KEY); if (s) inputArea.value = s; } catch(e) {} }
+    function saveInput(v) { try { localStorage.setItem(STORAGE_KEY, v); } catch(e) {} }
+
+    function updInputStats() {
+      var v = inputArea.value, c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      inputStats.textContent = t('sql.stats_format', { chars: c, lines: l });
+    }
+    function updOutputStats(text) {
+      var v = text || '', c = v.length, l = c === 0 ? 1 : v.split('\n').length;
+      outputStats.textContent = t('sql.stats_format', { chars: c, lines: l });
+    }
+
+    function updateOutputLabel() {
+      if (!outputArea.value) {
+        outputLabel.innerHTML = '<span class="text-text-muted">' + t('sql.status_waiting') + '</span>';
+      }
+    }
+
+    // ============================================================
+    // Operations
+    // ============================================================
+    function doFormat() {
+      var input = inputArea.value;
+      if (!input.trim()) { _currentStatus = { type: 'warning', key: 'sql.status_placeholder', params: null }; showStatus('warning', t('sql.status_placeholder')); return; }
+      try {
+        var out = formatSQL(input);
+        outputArea.value = out;
+        outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('sql.status_formatted') + '</span>';
+        updOutputStats(out);
+        _currentStatus = { type: 'success', key: 'sql.status_formatted', params: null };
+        showStatus('success', t('sql.status_formatted'));
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-[#F53F3F]">' + t('sql.status_formatted') + ' ' + e.message + '</span>';
+        updOutputStats('');
+        _currentStatus = { type: 'error', key: 'sql.status_formatted', params: null };
+        showStatus('error', t('sql.status_formatted') + ': ' + e.message);
+      }
+    }
+
+    function doCompress() {
+      var input = inputArea.value;
+      if (!input.trim()) { _currentStatus = { type: 'warning', key: 'sql.status_placeholder', params: null }; showStatus('warning', t('sql.status_placeholder')); return; }
+      try {
+        var out = compressSQL(input);
+        outputArea.value = out;
+        outputLabel.innerHTML = '<span class="text-[#00B42A]">' + t('sql.status_compressed', { chars: out.length }) + '</span>';
+        updOutputStats(out);
+        _currentStatus = { type: 'success', key: 'sql.status_compressed', params: { chars: out.length } };
+        showStatus('success', t('sql.status_compressed', { chars: out.length }));
+      } catch (e) {
+        outputArea.value = '';
+        outputLabel.innerHTML = '<span class="text-[#F53F3F]">' + t('sql.status_compressed', { chars: 0 }) + ' ' + e.message + '</span>';
+        updOutputStats('');
+        _currentStatus = { type: 'error', key: 'sql.status_compressed', params: { chars: 0 } };
+        showStatus('error', t('sql.status_compressed', { chars: 0 }) + ': ' + e.message);
+      }
+    }
+
+    function doClear() {
+      inputArea.value = '';
+      outputArea.value = '';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + t('sql.status_waiting') + '</span>';
+      updInputStats(); updOutputStats(''); saveInput('');
+      _currentStatus = { type: 'info', key: 'sql.status_cleared', params: null };
+      showStatus('info', t('sql.status_cleared'));
+      setActiveButton(btnFormat, [btnCompress]);
+    }
+
+    function doCopy() {
+      var v = outputArea.value;
+      if (!v) { _currentStatus = { type: 'warning', key: 'sql.status_placeholder', params: null }; showStatus('warning', t('sql.status_placeholder')); return; }
+      var done = function () {
+        var orig = btnCopy.textContent;
+        btnCopy.textContent = t('sql.copy_done');
+        btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
+        setTimeout(function () {
+          btnCopy.textContent = orig;
+          btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
+        }, 1200);
+        _currentStatus = { type: 'success', key: 'sql.copy_done', params: null };
+        showStatus('success', t('sql.copy_done'));
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(v).then(done).catch(function () { fallbackCopy(v, done); });
+      } else { fallbackCopy(v, done); }
+    }
+
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement('textarea'); ta.value = text;
+      ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    function showStatus(type, msg) {
+      var icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+      var colors = { success: 'text-[#00B42A]', error: 'text-[#F53F3F]', warning: 'text-[#FF7D00]', info: 'text-text-muted' };
+      statusBar.innerHTML = '<span class="inline-flex items-center gap-1 ' + (colors[type] || '') + ' text-sm font-medium">' +
+        (icons[type] || '') + ' ' + eHTML(msg) + '</span>';
+    }
+    function eHTML(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+    function setActiveButton(activeBtn, inactives) {
+      activeBtn.classList.add('bg-primary', 'text-white', 'border-none');
+      activeBtn.classList.remove('border', 'border-primary', 'text-primary', 'bg-white');
+      for (var i = 0; i < inactives.length; i++) {
+        inactives[i].classList.remove('bg-primary', 'text-white', 'border-none');
+        inactives[i].classList.add('border', 'border-primary', 'text-primary', 'bg-white');
+      }
+    }
+
+    // ============================================================
+    // Init
+    // ============================================================
+    function init() {
+      loadInput(); updInputStats(); updOutputStats('');
+      inputArea.addEventListener('input', function () { updInputStats(); saveInput(inputArea.value); });
+
+      btnFormat.addEventListener('click', function () { doFormat(); setActiveButton(btnFormat, [btnCompress]); });
+      btnCompress.addEventListener('click', function () { doCompress(); setActiveButton(btnCompress, [btnFormat]); });
+      btnClear.addEventListener('click', doClear);
+      btnCopy.addEventListener('click', doCopy);
+
+      inputArea.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doFormat(); setActiveButton(btnFormat, [btnCompress]); }
+      });
+
+      if (inputArea.value) { doFormat(); }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else { init(); }
+  })();
+  </script>
+</body>
+</html>

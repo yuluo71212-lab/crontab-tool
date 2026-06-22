@@ -1,5 +1,5 @@
 /**
- * Crontab 表达式生成器 - 完整交互逻辑
+ * CronBox - 完整交互逻辑
  * 原生 JavaScript，无第三方依赖
  * UI 样式使用 Tailwind CSS CDN 类名
  */
@@ -14,11 +14,11 @@
 
   /** 五个字段的定义 */
   var FIELD_DEFS = [
-    { key: 'minute',  label: '分钟', rangeStart: 0,  rangeEnd: 59 },
-    { key: 'hour',    label: '小时', rangeStart: 0,  rangeEnd: 23 },
-    { key: 'day',     label: '日',   rangeStart: 1,  rangeEnd: 31 },
-    { key: 'month',   label: '月',   rangeStart: 1,  rangeEnd: 12 },
-    { key: 'week',    label: '星期', rangeStart: 0,  rangeEnd: 7  }
+    { key: 'minute',  label: '分钟', labelKey: 'index.field_minute', rangeStart: 0,  rangeEnd: 59 },
+    { key: 'hour',    label: '小时', labelKey: 'index.field_hour',   rangeStart: 0,  rangeEnd: 23 },
+    { key: 'day',     label: '日',   labelKey: 'index.field_day',    rangeStart: 1,  rangeEnd: 31 },
+    { key: 'month',   label: '月',   labelKey: 'index.field_month',  rangeStart: 1,  rangeEnd: 12 },
+    { key: 'week',    label: '星期', labelKey: 'index.field_week',   rangeStart: 0,  rangeEnd: 7  }
   ];
 
   /** 8 个常用预设 */
@@ -33,8 +33,29 @@
     { label: '每月最后一天', expr: '0 0 L * *'   }
   ];
 
-  /** 星期中文映射 */
-  var WEEKDAY_MAP = { 0: '周日', 1: '周一', 2: '周二', 3: '周三', 4: '周四', 5: '周五', 6: '周六', 7: '周日' };
+  /** 星期映射（支持 i18n） */
+  var WEEKDAY_MAP = {
+    0: { label: '周日', key: 'index.weekday_0' },
+    1: { label: '周一', key: 'index.weekday_1' },
+    2: { label: '周二', key: 'index.weekday_2' },
+    3: { label: '周三', key: 'index.weekday_3' },
+    4: { label: '周四', key: 'index.weekday_4' },
+    5: { label: '周五', key: 'index.weekday_5' },
+    6: { label: '周六', key: 'index.weekday_6' },
+    7: { label: '周日', key: 'index.weekday_0' }
+  };
+
+  /** 获取字段的 i18n 标签 */
+  function getFieldLabel(def) {
+    return (window.t && def.labelKey) ? window.t(def.labelKey) : def.label;
+  }
+
+  /** 获取星期的 i18n 名称 */
+  function getWeekdayName(n) {
+    var entry = WEEKDAY_MAP[n];
+    if (!entry) return String(n);
+    return (window.t && entry.key) ? window.t(entry.key) : entry.label;
+  }
 
   // ============================================================
   // DOM 引用缓存
@@ -95,6 +116,7 @@
 
   /** 从 localStorage 恢复上次的表达式 */
   function loadExpressionFromStorage() {
+    if (!els.exprInput) return '';
     try {
       var saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -131,7 +153,7 @@
 
       var onSuccess = function () {
         // 变为绿色「已复制」
-        els.btnCopy.textContent = '已复制';
+        els.btnCopy.textContent = window.t ? window.t('index.copied') : '已复制';
         els.btnCopy.classList.remove('bg-primary', 'hover:bg-primary-hover');
         els.btnCopy.classList.add('bg-[#00B42A]');
         if (timeoutId) clearTimeout(timeoutId);
@@ -178,12 +200,12 @@
   /** 构建单个字段的 HTML（模式：每 / 指定 / 范围） */
   function buildFieldHTML(def) {
     var rangeLabel = def.key === 'week'
-      ? '(' + def.rangeStart + '-7，0和7=周日)'
+      ? (window.t ? window.t('index.field_desc_week') : '(0-7，0和7=周日)')
       : '(' + def.rangeStart + '-' + def.rangeEnd + ')';
 
     return '' +
       '<div class="field-col flex-1 min-w-0 bg-gray-50 rounded-btn p-3" data-field="' + def.key + '">' +
-        '<h3 class="text-sm font-semibold text-text-main mb-2">' + def.label + ' <small class="text-text-muted font-normal">' + rangeLabel + '</small></h3>' +
+        '<h3 class="text-sm font-semibold text-text-main mb-2">' + getFieldLabel(def) + ' <small class="text-text-muted font-normal">' + rangeLabel + '</small></h3>' +
 
         // 模式选择
         '<div class="field-mode flex flex-wrap gap-2 text-xs mb-2">' +
@@ -200,7 +222,7 @@
 
         // 模式面板：每
         '<div class="mode-panel mode-every" data-mode-panel="every">' +
-          '<span class="text-xs text-text-muted">匹配所有 ' + def.label + '</span>' +
+          '<span class="text-xs text-text-muted">匹配所有 ' + getFieldLabel(def) + '</span>' +
           '<div class="flex items-center gap-1 mt-1">' +
             '<label class="text-xs text-text-muted whitespace-nowrap">步长：</label>' +
             '<input type="number" class="input-step w-14 px-2 py-1 text-xs border border-gray-300 rounded-btn focus:outline-none focus:border-primary transition-btn" min="1" max="' + def.rangeEnd + '" placeholder="无">' +
@@ -440,13 +462,13 @@
   function triggerReverseParse() {
     var raw = els.reverseInput.value.trim();
     if (!raw) {
-      els.reverseResult.innerHTML = '<p class="text-text-muted text-sm">请输入 Crontab 表达式，自动实时解析</p>';
+      els.reverseResult.innerHTML = '<p class="text-text-muted text-sm">' + (window.t ? window.t('index.reverse_default') : '请输入 Crontab 表达式，自动实时解析') + '</p>';
       return;
     }
 
     var parts = raw.split(/\s+/);
     if (parts.length !== 5) {
-      els.reverseResult.innerHTML = '<p class="text-error text-sm font-medium">表达式格式错误：需要 5 个字段（分钟 小时 日 月 星期），当前检测到 ' + parts.length + ' 个字段</p>';
+      els.reverseResult.innerHTML = '<p class="text-error text-sm font-medium">' + (window.t ? window.t('index.err_fields_count', { count: parts.length }) : '表达式格式错误：需要 5 个字段（分钟 小时 日 月 星期），当前检测到 ' + parts.length + ' 个字段') + '</p>';
       return;
     }
 
@@ -454,7 +476,7 @@
     var errors = validateFields(parts);
     if (errors.length > 0) {
       els.reverseResult.innerHTML = '<div class="text-error text-sm">' +
-        '<p class="font-medium mb-1">表达式格式错误，请检查语法：</p>' +
+        '<p class="font-medium mb-1">' + (window.t ? window.t('index.err_check_syntax') : '表达式格式错误，请检查语法：') + '</p>' +
         '<ul class="list-disc list-inside space-y-0.5">' +
           errors.map(function (e) { return '<li>' + e + '</li>'; }).join('') +
         '</ul>' +
@@ -468,11 +490,11 @@
 
     els.reverseResult.innerHTML =
       '<div class="mb-3">' +
-        '<h4 class="text-sm font-semibold text-text-main mb-1">中文释义</h4>' +
+        '<h4 class="text-sm font-semibold text-text-main mb-1">' + (window.t ? window.t('index.reverse_natural') : '中文释义') + '</h4>' +
         '<p class="text-base font-semibold text-success">' + natural + '</p>' +
       '</div>' +
       '<div>' +
-        '<h4 class="text-sm font-semibold text-text-main mb-1">字段明细</h4>' +
+        '<h4 class="text-sm font-semibold text-text-main mb-1">' + (window.t ? window.t('index.reverse_detail') : '字段明细') + '</h4>' +
         fieldDetails +
       '</div>';
   }
@@ -485,44 +507,52 @@
       var val = parts[i];
       var err = validateSingleField(val, def);
       if (err) {
-        errors.push(def.label + '字段（"' + val + '"）：' + err);
+        var fieldName = getFieldLabel(def);
+        if (window.t) {
+          errors.push(window.t('index.field_err_prefix', { field: fieldName, val: val, err: err }));
+        } else {
+          errors.push(fieldName + '字段（"' + val + '"）：' + err);
+        }
       }
     }
     return errors;
   }
 
   function validateSingleField(val, def) {
+    var _t = window.t || function(k, p) { return k; };
+    var rangeStr = def.rangeStart + '-' + def.rangeEnd;
+
     if (val === 'L') {
-      if (def.key !== 'day') return 'L 只能用于日字段';
+      if (def.key !== 'day') return _t('index.err_L_only_day');
       return null;
     }
 
     var testVal = val;
 
     if (!/^[0-9*,/\-L]+$/.test(testVal)) {
-      return '包含非法字符';
+      return _t('index.err_invalid_chars');
     }
 
     if (testVal.indexOf('L') > -1 && testVal !== 'L') {
-      return 'L 不能与其他值组合使用';
+      return _t('index.err_L_no_combine');
     }
 
     var tokens = testVal.split(',');
     for (var i = 0; i < tokens.length; i++) {
       var token = tokens[i];
-      if (!token) return '存在空值';
+      if (!token) return _t('index.err_empty_token');
 
       var slashIdx = token.indexOf('/');
       if (slashIdx > -1) {
         var before = token.substring(0, slashIdx);
         var after = token.substring(slashIdx + 1);
         var step = parseInt(after, 10);
-        if (isNaN(step) || step < 1) return '步进值必须为正整数';
-        if (step > def.rangeEnd) return '步进值超出范围';
+        if (isNaN(step) || step < 1) return _t('index.err_step_positive');
+        if (step > def.rangeEnd) return _t('index.err_step_range');
 
         if (before === '*') continue;
         if (!isValidRangeOrValue(before, def)) {
-          return '步进基础值不合法';
+          return _t('index.err_step_base_invalid');
         }
         continue;
       }
@@ -533,17 +563,17 @@
         var endStr = token.substring(dashIdx + 1);
         var start = parseInt(startStr, 10);
         var end = parseInt(endStr, 10);
-        if (isNaN(start) || isNaN(end)) return '范围值必须为数字';
-        if (start < def.rangeStart || start > def.rangeEnd) return '范围起始值超出 ' + def.rangeStart + '-' + def.rangeEnd;
-        if (end < def.rangeStart || end > def.rangeEnd) return '范围结束值超出 ' + def.rangeStart + '-' + def.rangeEnd;
-        if (start > end) return '范围起始值不能大于结束值';
+        if (isNaN(start) || isNaN(end)) return _t('index.err_range_numeric');
+        if (start < def.rangeStart || start > def.rangeEnd) return _t('index.err_range_start_overflow', { min: def.rangeStart, max: def.rangeEnd });
+        if (end < def.rangeStart || end > def.rangeEnd) return _t('index.err_range_end_overflow', { min: def.rangeStart, max: def.rangeEnd });
+        if (start > end) return _t('index.err_range_order');
         continue;
       }
 
       if (token === '*') continue;
       var num = parseInt(token, 10);
-      if (isNaN(num)) return '值必须为数字或 *';
-      if (num < def.rangeStart || num > def.rangeEnd) return '值 ' + num + ' 超出 ' + def.rangeStart + '-' + def.rangeEnd;
+      if (isNaN(num)) return _t('index.err_value_numeric');
+      if (num < def.rangeStart || num > def.rangeEnd) return _t('index.err_value_overflow', { val: num, min: def.rangeStart, max: def.rangeEnd });
     }
     return null;
   }
@@ -559,12 +589,13 @@
     return !isNaN(n) && n >= def.rangeStart && n <= def.rangeEnd;
   }
 
-  /** 生成中文自然语言释义 */
+  /** 生成自然语言释义（支持 i18n） */
   function toNaturalLanguage(parts) {
     var m = parts[0], h = parts[1], d = parts[2], mo = parts[3], w = parts[4];
+    var _t = window.t || function(k, p) { return k; };
 
     if (m === '*' && h === '*' && d === '*' && mo === '*' && w === '*') {
-      return '每分钟执行';
+      return _t('index.nat_every_minute_exec');
     }
 
     var minDesc  = describeMinute(m);
@@ -575,70 +606,75 @@
 
     var sentence = '';
 
-    if (weekDesc !== '每天') {
+    if (w !== '*') {
       sentence = weekDesc;
-    } else if (dayDesc !== '每天') {
+    } else if (d !== '*') {
       if (mo !== '*') {
         sentence = monthDesc + dayDesc;
       } else {
         sentence = dayDesc;
       }
     } else if (mo !== '*') {
-      sentence = monthDesc + '每天';
+      sentence = monthDesc + _t('index.nat_every_day');
     } else {
-      sentence = '每天';
+      sentence = _t('index.nat_every_day');
     }
 
     var timeStr = '';
     if (h === '*' && m === '*') {
       timeStr = '';
-      if (sentence === '每天' && weekDesc === '每天' && dayDesc === '每天' && mo === '*') {
-        return '每分钟执行';
+      if (w === '*' && d === '*' && mo === '*') {
+        return _t('index.nat_every_minute_exec');
       }
     } else if (h !== '*' && m !== '*') {
       timeStr = hourDesc + ' ' + minDesc;
     } else if (h !== '*' && m === '*') {
-      timeStr = hourDesc + ' 每分钟';
+      timeStr = hourDesc + ' ' + _t('index.nat_per_minute');
     } else if (h === '*' && m !== '*') {
-      timeStr = '每小时 ' + minDesc;
+      timeStr = _t('index.nat_every_hour') + ' ' + minDesc;
     }
 
     if (timeStr) {
       sentence += ' ' + timeStr;
     }
 
-    return sentence + ' 执行';
+    return sentence + _t('index.nat_exec');
   }
 
   function describeMinute(val) {
-    return genericDescribe(val, 'minute', '分钟', '分');
+    var _t = window.t || function(k) { return k; };
+    return genericDescribe(val, 'minute', _t('index.nat_minute'), _t('index.nat_min'));
   }
 
   function describeHour(val) {
-    if (val === '*') return '每小时';
-    return genericDescribe(val, 'hour', '点', '点');
+    var _t = window.t || function(k) { return k; };
+    if (val === '*') return _t('index.nat_every_hour');
+    return genericDescribe(val, 'hour', _t('index.nat_hour_unit'), _t('index.nat_hour_unit'));
   }
 
   function describeDay(val) {
-    if (val === '*') return '每天';
-    if (val === 'L') return '最后一天';
-    return genericDescribe(val, 'day', '日', '日');
+    var _t = window.t || function(k) { return k; };
+    if (val === '*') return _t('index.nat_every_day');
+    if (val === 'L') return _t('index.nat_last_day');
+    return genericDescribe(val, 'day', _t('index.nat_every_day'), _t('index.nat_every_day'));
   }
 
   function describeMonth(val) {
-    if (val === '*') return '每月';
-    return genericDescribe(val, 'month', '月', '月');
+    var _t = window.t || function(k) { return k; };
+    if (val === '*') return _t('index.nat_every_month');
+    return genericDescribe(val, 'month', _t('index.nat_every_month'), _t('index.nat_every_month'));
   }
 
   function describeWeek(val) {
-    if (val === '*') return '每天';
+    var _t = window.t || function(k, p) { return k; };
+    if (val === '*') return _t('index.nat_every_day');
 
     if (val.indexOf('-') > -1) {
       var rp = val.split('-');
       var s = parseInt(rp[0], 10), e = parseInt(rp[1], 10);
       if (!isNaN(s) && !isNaN(e) && s <= e) {
-        if (s === 1 && e === 5) return '每个工作日';
-        return '每周' + (WEEKDAY_MAP[s] || s) + '至' + (WEEKDAY_MAP[e] || e);
+        if (s === 1 && e === 5) return _t('index.nat_every_workday');
+        return _t('index.nat_weekly') + getWeekdayName(s) + _t('index.nat_to') + getWeekdayName(e);
       }
     }
 
@@ -646,48 +682,49 @@
       var items = val.split(',');
       var names = items.map(function (v) {
         var n = parseInt(v, 10);
-        return WEEKDAY_MAP[n] || v;
+        return getWeekdayName(n) || v;
       });
-      return '每周' + names.join('、');
+      return _t('index.nat_weekly') + names.join(', ');
     }
 
     var n = parseInt(val, 10);
     if (!isNaN(n)) {
-      return '每周' + (WEEKDAY_MAP[n] || n);
+      return _t('index.nat_weekly') + getWeekdayName(n);
     }
 
-    return '每周' + val;
+    return _t('index.nat_weekly') + val;
   }
 
   function genericDescribe(val, fieldKey, unitSingular, unitShort) {
-    if (val === '*') return '每' + unitSingular;
+    var _t = window.t || function(k, p) { return k; };
+    if (val === '*') return _t('index.nat_every') + unitSingular;
 
     if (val.indexOf('*/') === 0) {
       var step = val.substring(2);
-      return '每 ' + step + ' ' + unitSingular;
+      return _t('index.nat_every_X', { step: step, unit: unitSingular });
     }
 
     var slashIdx = val.indexOf('/');
     if (slashIdx > -1) {
       var before = val.substring(0, slashIdx);
       var after = val.substring(slashIdx + 1);
-      return before + '开始每 ' + after + ' ' + unitSingular;
+      return _t('index.nat_step_from', { base: before, step: after, unit: unitSingular });
     }
 
     if (val.indexOf('-') > -1) {
       var rp = val.split('-');
-      return rp[0] + ' 到 ' + rp[1] + ' ' + unitSingular;
+      return _t('index.nat_range_X_to_Y', { start: rp[0], end: rp[1], unit: unitSingular });
     }
 
     if (val.indexOf(',') > -1) {
-      return '第 ' + val + ' ' + unitSingular;
+      return _t('index.nat_list_X', { list: val, unit: unitSingular });
     }
 
     var n = parseInt(val, 10);
     if (!isNaN(n)) {
-      if (fieldKey === 'hour') return n + '点';
-      if (fieldKey === 'minute') return n + '分';
-      return '第 ' + n + ' ' + unitSingular;
+      if (fieldKey === 'hour') return _t('index.nat_hour_X', { n: n });
+      if (fieldKey === 'minute') return _t('index.nat_min_X', { n: n });
+      return _t('index.nat_value_X', { n: n, unit: unitSingular });
     }
 
     return val;
@@ -695,14 +732,16 @@
 
   /** 生成字段明细 HTML 表格（使用 Tailwind 表格样式） */
   function buildFieldDetailTable(parts) {
-    var fieldLabels = ['分钟', '小时', '日', '月', '星期'];
     var descFns = [describeMinute, describeHour, describeDay, describeMonth, describeWeek];
+    var thField = window.t ? window.t('index.table_field') : '字段';
+    var thRaw = window.t ? window.t('index.table_raw') : '原始值';
+    var thMeaning = window.t ? window.t('index.table_meaning') : '含义';
 
     var rows = '';
     for (var i = 0; i < 5; i++) {
       var bg = (i % 2 === 0) ? '' : 'bg-gray-50';
       rows += '<tr class="' + bg + '">' +
-                '<td class="border border-gray-200 px-3 py-1.5 text-sm">' + fieldLabels[i] + '</td>' +
+                '<td class="border border-gray-200 px-3 py-1.5 text-sm">' + getFieldLabel(FIELD_DEFS[i]) + '</td>' +
                 '<td class="border border-gray-200 px-3 py-1.5 text-sm"><code class="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono-cron text-text-main">' + escapeHTML(parts[i]) + '</code></td>' +
                 '<td class="border border-gray-200 px-3 py-1.5 text-sm">' + descFns[i](parts[i]) + '</td>' +
               '</tr>';
@@ -710,9 +749,9 @@
 
     return '<table class="w-full border-collapse border border-gray-200 text-sm">' +
              '<thead><tr class="bg-gray-50">' +
-               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">字段</th>' +
-               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">原始值</th>' +
-               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">含义</th>' +
+               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">' + thField + '</th>' +
+               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">' + thRaw + '</th>' +
+               '<th class="border border-gray-200 px-3 py-1.5 text-left text-xs font-semibold">' + thMeaning + '</th>' +
              '</tr></thead>' +
              '<tbody>' + rows + '</tbody>' +
            '</table>';
@@ -724,6 +763,12 @@
 
   function init() {
     cacheDom();
+
+    // 检测是否为 Crontab 主页面：缺少关键 DOM 元素时仅初始化导航，避免报错
+    if (!els.exprInput) {
+      initStickyHeader();
+      return;
+    }
 
     // 模块0：导航
     initStickyHeader();
@@ -752,6 +797,22 @@
       // 默认显示第一个预设（每分钟执行）
       applyPreset(PRESETS[0].expr);
     }
+
+    // 监听语言切换事件，刷新动态生成的内容
+    document.addEventListener('langchange', function () {
+      var currentExpr = els.exprInput ? els.exprInput.value.trim() : '';
+      // 重建生成器 UI（字段标签已更新）
+      buildGeneratorUI();
+      // 重建预设按钮（按钮标签保持不变，但 UI 已刷新）
+      // 重新同步生成器状态
+      if (currentExpr && currentExpr.split(/\s+/).length === 5) {
+        syncGeneratorFromExpression(currentExpr);
+      }
+      // 重新触发反向解析
+      if (els.reverseInput && els.reverseInput.value.trim()) {
+        triggerReverseParse();
+      }
+    });
   }
 
   // DOM 加载完成后初始化
