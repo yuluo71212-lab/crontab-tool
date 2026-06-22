@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-i18n-title="url.title">
+<html lang="zh-CN" data-force-lang="zh" data-i18n-title="url.title">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,8 @@
   <meta name="description" content="免费在线 URL 编解码工具，支持中文、特殊字符的 encodeURIComponent 编码与解码，一键互换输入输出，无需注册开箱即用。">
   <meta name="keywords" content="URL 编码, URL 解码, encodeURIComponent, decodeURIComponent, 网址编码, 百分号编码">
   <meta name="robots" content="index, follow">
+  <link rel="alternate" hreflang="zh" href="https://cronbox.top/url.html">
+  <link rel="alternate" hreflang="en" href="https://cronbox.top/url-en.html">
 
   <!-- Tailwind CSS v3 CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -56,7 +58,7 @@
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
       <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
-        <button id="lang-toggle" data-i18n="lang.switch" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap">English</button>
+        <a id="lang-switch" href="url-en.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">English</a>
         <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
         <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
         <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.url">URL 编解码</a>

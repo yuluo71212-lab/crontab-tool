@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-force-lang="zh" data-i18n-title="json.title">
+<html lang="en" data-i18n-title="json.title" data-force-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JSON 格式化校验工具 - 在线 JSON 美化压缩</title>
-  <meta name="description" content="免费在线 JSON 格式化校验工具，支持 JSON 美化缩进、一键压缩、实时语法校验与错误定位、代码高亮显示，无需注册开箱即用。">
-  <meta name="keywords" content="JSON 格式化, JSON 校验, JSON 压缩, JSON 美化, JSON 高亮, 在线 JSON 工具">
+  <title>JSON Formatter Validator - CronBox</title>
+  <meta name="description" content="Free online JSON format and validate tool. Beautify, compress, and validate JSON with syntax error highlighting. No sign-up required.">
+  <meta name="keywords" content="JSON formatter, JSON validator, JSON beautifier, JSON compressor, online JSON tool, JSON syntax check">
   <meta name="robots" content="index, follow">
   <link rel="alternate" hreflang="zh" href="https://cronbox.top/json-formatter.html">
   <link rel="alternate" hreflang="en" href="https://cronbox.top/json-formatter-en.html">
@@ -67,19 +67,19 @@
   <!-- ========== 顶部导航 ========== -->
   <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-100 sticky top-0 z-50">
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
-      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <a href="index-en.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
         <!-- 语言切换按钮 -->
-        <a id="lang-switch" href="json-formatter-en.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">English</a>
-        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.json">JSON 格式化</a>
-        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
-        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
-        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
-        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
-        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
-        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
-        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
-        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+        <a id="lang-switch" href="json-formatter.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">中文</a>
+        <a href="json-formatter-en.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.json">JSON Format</a>
+        <a href="base64-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL Encode</a>
+        <a href="md5-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5</a>
+        <a href="yaml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML Format</a>
+        <a href="xml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML Format</a>
+        <a href="sql-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL Format</a>
+        <a href="regex-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">Regex</a>
+        <a href="diff-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">Diff</a>
       </div>
     </nav>
   </header>
@@ -91,20 +91,20 @@
     <section class="bg-white rounded-card shadow-card p-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
         <div>
-          <h1 class="text-xl font-bold text-text-main" data-i18n="json.title">JSON 格式化校验工具</h1>
-          <p class="text-sm text-text-secondary mt-1" data-i18n="json.subtitle">粘贴杂乱 JSON，一键格式化 / 压缩，实时语法校验</p>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="json.title">JSON Formatter Validator</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="json.subtitle">Paste messy JSON, format / compress with one click, real-time syntax validation</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button id="btn-format"  class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="json.btn_format">格式化</button>
-          <button id="btn-compress" class="min-w-[88px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="json.btn_compress">压缩</button>
-          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_clear">清空</button>
-          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_copy">复制结果</button>
+          <button id="btn-format"  class="min-w-[80px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="json.btn_format">Format</button>
+          <button id="btn-compress" class="min-w-[88px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="json.btn_compress">Compress</button>
+          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_clear">Clear</button>
+          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="json.btn_copy">Copy Result</button>
         </div>
       </div>
 
       <!-- 校验状态 -->
       <div id="validation-status" class="flex items-center gap-2 text-sm min-h-[28px]">
-        <span class="text-text-muted" data-i18n="json.status_waiting">等待输入…</span>
+        <span class="text-text-muted" data-i18n="json.status_waiting">Waiting for input...</span>
       </div>
     </section>
 
@@ -113,8 +113,8 @@
       <!-- 输入框 -->
       <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.input_label">输入</h2>
-          <span class="text-xs text-text-muted" data-i18n="json.input_hint">粘贴 JSON 到此处</span>
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.input_label">Input</h2>
+          <span class="text-xs text-text-muted" data-i18n="json.input_hint">Paste JSON here</span>
         </div>
         <textarea id="input-area"
           class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-json text-text-main
@@ -123,21 +123,21 @@
           placeholder='{"key": "value", "list": [1, 2, 3]}'
           spellcheck="false"></textarea>
         <div class="flex items-center justify-between mt-2">
-          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+          <span id="input-stats" class="text-xs text-text-muted">Chars: 0 | Lines: 1</span>
         </div>
       </div>
 
       <!-- 输出框 -->
       <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.output_label">结果</h2>
-          <span id="output-label" class="text-xs text-text-muted" data-i18n="json.status_waiting_fmt">等待格式化…</span>
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="json.output_label">Result</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="json.status_waiting_fmt">Waiting for format...</span>
         </div>
         <pre id="output-area"
           class="flex-1 overflow-auto border border-gray-200 rounded-btn p-4 font-mono-json text-text-main m-0
                  whitespace-pre-wrap break-words min-h-[200px]"></pre>
         <div class="flex items-center justify-between mt-2">
-          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+          <span id="output-stats" class="text-xs text-text-muted">Chars: 0 | Lines: 1</span>
         </div>
       </div>
     </section>
@@ -147,11 +147,11 @@
   <!-- ========== 底部页脚 ========== -->
   <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-100">
     <div class="flex justify-center gap-6 mb-3">
-      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
-      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
-      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+      <a href="pages/about-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">About</a>
+      <a href="pages/privacy-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">Privacy</a>
+      <a href="pages/contact-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">Contact</a>
     </div>
-    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox Free Online Tools</p>
   </footer>
 
   <script src="i18n.js"></script>

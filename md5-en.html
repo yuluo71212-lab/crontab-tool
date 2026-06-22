@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-force-lang="zh" data-i18n-title="md5.title">
+<html lang="en" data-i18n-title="md5.title" data-force-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MD5 在线加密工具 - 32位/16位哈希生成</title>
-  <meta name="description" content="免费在线 MD5 加密工具，支持生成 32 位和 16 位 MD5 哈希值，兼容中文及特殊字符，不可逆哈希算法，仅用于数据完整性校验。">
-  <meta name="keywords" content="MD5 加密, MD5 在线, MD5 哈希, 32位MD5, 16位MD5, 不可逆加密">
+  <title>MD5 Hash Generator - CronBox</title>
+  <meta name="description" content="Fast online MD5 encryption tool. Generate 32-bit and 16-bit MD5 hash values. Supports Chinese characters, emoji, and multi-line text input.">
+  <meta name="keywords" content="MD5 hash, MD5 generator, MD5 encryption, 32-bit MD5, 16-bit MD5, online MD5 tool">
   <meta name="robots" content="index, follow">
   <link rel="alternate" hreflang="zh" href="https://cronbox.top/md5.html">
   <link rel="alternate" hreflang="en" href="https://cronbox.top/md5-en.html">
@@ -54,18 +54,18 @@
   <!-- ========== 顶部导航 ========== -->
   <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-100 sticky top-0 z-50">
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
-      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <a href="index-en.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
-        <a id="lang-switch" href="md5-en.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">English</a>
-        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
-        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
-        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
-        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.md5">MD5 加密</a>
-        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
-        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
-        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
-        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
-        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+        <a id="lang-switch" href="md5.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">中文</a>
+        <a href="json-formatter-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
+        <a href="base64-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
+        <a href="md5-en.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.md5">MD5 加密</a>
+        <a href="yaml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
+        <a href="xml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
+        <a href="sql-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
+        <a href="regex-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
+        <a href="diff-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
       </div>
     </nav>
   </header>
@@ -172,9 +172,9 @@
   <!-- ========== 底部页脚 ========== -->
   <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-100">
     <div class="flex justify-center gap-6 mb-3">
-      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
-      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
-      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+      <a href="pages/about-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
+      <a href="pages/privacy-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
+      <a href="pages/contact-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
     </div>
     <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
   </footer>

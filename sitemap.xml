@@ -3,111 +3,223 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <!-- ============================================================ -->
-  <!-- 首页                                                        -->
+  <!-- 首页 (中英独立)                                               -->
   <!-- ============================================================ -->
   <url>
-    <loc>https://cronbox.top/</loc>
+    <loc>https://cronbox.top/index.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/index.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/index-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/index-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/index.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/index-en.html" />
   </url>
 
   <!-- ============================================================ -->
-  <!-- 工具页面                                                     -->
+  <!-- JSON 格式化                                                    -->
   <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/json-formatter.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/json-formatter.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/json-formatter.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/json-formatter.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/json-formatter-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/json-formatter-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/json-formatter.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/json-formatter-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- Base64 编解码                                                  -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/base64.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/base64.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/base64.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/base64.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/base64-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/base64-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/base64.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/base64-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- URL 编解码                                                     -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/url.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/url.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/url.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/url.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/url-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/url-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/url.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/url-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- MD5 加密                                                       -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/md5.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/md5.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/md5.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/md5.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/md5-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/md5-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/md5.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/md5-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- YAML 格式化                                                     -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/yaml.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/yaml.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/yaml.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/yaml.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/yaml-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/yaml-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/yaml.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/yaml-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- XML 格式化                                                      -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/xml.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/xml.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/xml.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/xml.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/xml-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/xml-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/xml.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/xml-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- SQL 格式化                                                      -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/sql.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/sql.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/sql.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/sql.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/sql-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/sql-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/sql.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/sql-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- 正则测试                                                        -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/regex.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/regex.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/regex.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/regex.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/regex-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/regex-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/regex.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/regex-en.html" />
   </url>
 
+  <!-- ============================================================ -->
+  <!-- 文本对比                                                        -->
+  <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/diff.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/diff.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/diff.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/diff.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/diff-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/diff-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/diff.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/diff-en.html" />
   </url>
 
   <!-- ============================================================ -->
-  <!-- 信息页面                                                     -->
+  <!-- 信息页面                                                       -->
   <!-- ============================================================ -->
   <url>
     <loc>https://cronbox.top/pages/about.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/about.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/about.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/about.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/about-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/pages/about-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/about.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/about-en.html" />
   </url>
 
   <url>
@@ -115,8 +227,16 @@
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/privacy.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/privacy.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/privacy.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/privacy-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/pages/privacy-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/privacy.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/privacy-en.html" />
   </url>
 
   <url>
@@ -124,8 +244,16 @@
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://cronbox.top/pages/contact.html" />
-    <xhtml:link rel="alternate" hreflang="en"    href="https://cronbox.top/pages/contact.html" />
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/contact.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/contact-en.html" />
+  </url>
+  <url>
+    <loc>https://cronbox.top/pages/contact-en.html</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="zh" href="https://cronbox.top/pages/contact.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://cronbox.top/pages/contact-en.html" />
   </url>
 
 </urlset>

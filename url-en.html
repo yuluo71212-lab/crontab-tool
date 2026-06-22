@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-force-lang="zh" data-i18n-title="base64.title">
+<html lang="en" data-i18n-title="url.title" data-force-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Base64 在线编解码工具 - 文本编码解码</title>
-  <meta name="description" content="免费在线 Base64 编解码工具，支持中文字符、Emoji、特殊符号的编码与解码，一键互换输入输出，无需注册开箱即用。">
-  <meta name="keywords" content="Base64 编码, Base64 解码, Base64 在线工具, 中文 Base64, 文本编码">
+  <title>URL Encoder Decoder - CronBox</title>
+  <meta name="description" content="Free online URL encode and decode tool. Supports special characters, full URLs, one-click swap between input and output.">
+  <meta name="keywords" content="URL encoder, URL decoder, URL encoding, encodeURIComponent, percent encoding, online URL tool">
   <meta name="robots" content="index, follow">
-  <link rel="alternate" hreflang="zh" href="https://cronbox.top/base64.html">
-  <link rel="alternate" hreflang="en" href="https://cronbox.top/base64-en.html">
+  <link rel="alternate" hreflang="zh" href="https://cronbox.top/url.html">
+  <link rel="alternate" hreflang="en" href="https://cronbox.top/url-en.html">
 
   <!-- Tailwind CSS v3 CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -36,12 +36,11 @@
   <style>
     .transition-btn { transition: all 0.2s ease; }
     button:active { transform: scale(0.97); }
-    .font-mono-base64 {
+    .font-mono-url {
       font-family: Consolas, Monaco, 'Courier New', monospace;
       font-size: 13px;
       line-height: 1.7;
     }
-    /* 输出区域滚动条 */
     #output-area::-webkit-scrollbar,
     #input-area::-webkit-scrollbar { width: 6px; height: 6px; }
     #output-area::-webkit-scrollbar-thumb,
@@ -57,18 +56,18 @@
   <!-- ========== 顶部导航 ========== -->
   <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-100 sticky top-0 z-50">
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
-      <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
+      <a href="index-en.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
-        <a id="lang-switch" href="base64-en.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">English</a>
-        <a href="json-formatter.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON 格式化</a>
-        <a href="base64.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.base64">Base64</a>
-        <a href="url.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.url">URL 编解码</a>
-        <a href="md5.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5 加密</a>
-        <a href="yaml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML 格式化</a>
-        <a href="xml.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML 格式化</a>
-        <a href="sql.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL 格式化</a>
-        <a href="regex.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">正则测试</a>
-        <a href="diff.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">文本对比</a>
+        <a id="lang-switch" href="url.html" class="w-[105px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-gray-50 rounded-full hover:bg-gray-100 transition-btn cursor-pointer inline-flex items-center justify-center whitespace-nowrap no-underline">中文</a>
+        <a href="json-formatter-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.json">JSON Format</a>
+        <a href="base64-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.base64">Base64</a>
+        <a href="url-en.html" class="w-[110px] h-10 px-4 text-sm font-medium bg-primary text-white rounded-full hover:bg-primary-hover transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap shadow-sm" data-i18n="nav.url">URL Encode</a>
+        <a href="md5-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.md5">MD5</a>
+        <a href="yaml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.yaml">YAML Format</a>
+        <a href="xml-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.xml">XML Format</a>
+        <a href="sql-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.sql">SQL Format</a>
+        <a href="regex-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.regex">Regex</a>
+        <a href="diff-en.html" class="w-[110px] h-10 px-4 text-sm font-medium border border-gray-200 text-text-secondary bg-white rounded-full hover:bg-gray-50 hover:border-gray-300 transition-btn no-underline inline-flex items-center justify-center whitespace-nowrap" data-i18n="nav.diff">Diff</a>
       </div>
     </nav>
   </header>
@@ -80,21 +79,21 @@
     <section class="bg-white rounded-card shadow-card p-6">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
         <div>
-          <h1 class="text-xl font-bold text-text-main" data-i18n="base64.title">Base64 在线编解码工具</h1>
-          <p class="text-sm text-text-secondary mt-1" data-i18n="base64.subtitle">支持中文 / Emoji / 特殊字符 — 一键编码解码，快速互换</p>
+          <h1 class="text-xl font-bold text-text-main" data-i18n="url.title">URL Encoder Decoder</h1>
+          <p class="text-sm text-text-secondary mt-1" data-i18n="url.subtitle">Supports Chinese / special characters / full URLs — one-click encode/decode, quick swap</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button id="btn-encode"  class="min-w-[72px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="base64.btn_encode">编码</button>
-          <button id="btn-decode"  class="min-w-[72px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="base64.btn_decode">解码</button>
-          <button id="btn-swap"    class="min-w-[64px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="base64.btn_swap">互换</button>
-          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="base64.btn_clear">清空</button>
-          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="base64.btn_copy">复制结果</button>
+          <button id="btn-encode"  class="min-w-[72px] px-5 py-2 text-sm font-medium bg-primary text-white rounded-btn hover:bg-primary-hover hover:shadow-md transition-btn cursor-pointer border-none" data-i18n="url.btn_encode">Encode</button>
+          <button id="btn-decode"  class="min-w-[72px] px-5 py-2 text-sm font-medium border border-primary text-primary bg-white rounded-btn hover:bg-[#E8F3FF] transition-btn cursor-pointer" data-i18n="url.btn_decode">Decode</button>
+          <button id="btn-swap"    class="min-w-[64px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_swap">Swap</button>
+          <button id="btn-clear"   class="min-w-[72px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_clear">Clear</button>
+          <button id="btn-copy"    class="min-w-[100px] px-5 py-2 text-sm font-medium border border-gray-300 text-text-secondary bg-white rounded-btn hover:bg-gray-50 transition-btn cursor-pointer" data-i18n="url.btn_copy">Copy Result</button>
         </div>
       </div>
 
       <!-- 状态提示 -->
       <div id="status-bar" class="flex items-center gap-2 text-sm min-h-[28px]">
-        <span class="text-text-muted" data-i18n="base64.status_placeholder">请输入文本或 Base64 字符串</span>
+        <span class="text-text-muted" data-i18n="url.status_placeholder">Enter text or URL-encoded string</span>
       </div>
     </section>
 
@@ -103,33 +102,33 @@
       <!-- 输入框 -->
       <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-semibold text-text-main" data-i18n="base64.input_label">输入</h2>
-          <span class="text-xs text-text-muted" data-i18n="base64.input_hint">粘贴文本到此处</span>
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="url.input_label">Input</h2>
+          <span class="text-xs text-text-muted" data-i18n="url.input_hint">Paste text here</span>
         </div>
         <textarea id="input-area"
-          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-base64 text-text-main
+          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-url text-text-main
                  focus:outline-none focus:border-primary transition-btn
                  placeholder:text-text-muted"
-          placeholder="输入要编码的文本，或要解码的 Base64 字符串..."
+          placeholder="Enter text to encode, or URL-encoded string to decode..."
           spellcheck="false"></textarea>
         <div class="flex items-center justify-between mt-2">
-          <span id="input-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+          <span id="input-stats" class="text-xs text-text-muted">Chars: 0 | Lines: 1</span>
         </div>
       </div>
 
       <!-- 输出框 -->
       <div class="flex-1 min-w-0 bg-white rounded-card shadow-card p-4 flex flex-col">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-semibold text-text-main" data-i18n="base64.output_label">结果</h2>
-          <span id="output-label" class="text-xs text-text-muted" data-i18n="base64.status_waiting">等待操作…</span>
+          <h2 class="text-sm font-semibold text-text-main" data-i18n="url.output_label">Result</h2>
+          <span id="output-label" class="text-xs text-text-muted" data-i18n="url.status_waiting">Waiting...</span>
         </div>
         <textarea id="output-area" readonly
-          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-base64 text-text-main
+          class="flex-1 w-full resize-y border border-gray-200 rounded-btn p-4 font-mono-url text-text-main
                  bg-gray-50 focus:outline-none min-h-[200px]
                  placeholder:text-text-muted"
-          placeholder="编码或解码结果将显示在这里..."></textarea>
+          placeholder="Encoded or decoded result will appear here..."></textarea>
         <div class="flex items-center justify-between mt-2">
-          <span id="output-stats" class="text-xs text-text-muted">字符: 0 | 行数: 1</span>
+          <span id="output-stats" class="text-xs text-text-muted">Chars: 0 | Lines: 1</span>
         </div>
       </div>
     </section>
@@ -139,11 +138,11 @@
   <!-- ========== 底部页脚 ========== -->
   <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-100">
     <div class="flex justify-center gap-6 mb-3">
-      <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
-      <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
-      <a href="pages/contact.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+      <a href="pages/about-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">About</a>
+      <a href="pages/privacy-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">Privacy</a>
+      <a href="pages/contact-en.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.contact">Contact</a>
     </div>
-    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
+    <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox Free Online Tools</p>
   </footer>
 
   <script src="i18n.js"></script>
@@ -176,7 +175,7 @@
     // ============================================================
     // localStorage 持久化
     // ============================================================
-    var STORAGE_KEY = 'base64_input';
+    var STORAGE_KEY = 'url_input';
 
     function loadInput() {
       try {
@@ -195,14 +194,14 @@
       var val = inputArea.value;
       var chars = val.length;
       var lines = chars === 0 ? 1 : val.split('\n').length;
-      inputStats.textContent = t('base64.stats_format', { chars: chars, lines: lines });
+      inputStats.textContent = t('url.stats_format', { chars: chars, lines: lines });
     }
 
     function updateOutputStats(text) {
       var txt = text || '';
       var chars = txt.length;
       var lines = chars === 0 ? 1 : txt.split('\n').length;
-      outputStats.textContent = t('base64.stats_format', { chars: chars, lines: lines });
+      outputStats.textContent = t('url.stats_format', { chars: chars, lines: lines });
     }
 
     function updateStats() {
@@ -211,56 +210,20 @@
     }
 
     // ============================================================
-    // Base64 编解码核心
+    // URL 编解码核心
     // ============================================================
-    function encodeBase64(str) {
-      var encoder = new TextEncoder();
-      var bytes = encoder.encode(str);
-      var binary = '';
-      for (var i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return btoa(binary);
+    function encodeURL(str) {
+      return encodeURIComponent(str);
     }
 
-    function decodeBase64(str) {
-      // 去除所有空白字符
-      var cleaned = str.replace(/\s/g, '');
-
-      if (cleaned.length === 0) {
-        throw new Error(t('base64.err_empty'));
-      }
-
-      // 检查是否包含非 Base64 字符
-      if (!/^[A-Za-z0-9+/]*={0,2}$/.test(cleaned)) {
-        // 定位第一个非法字符
-        var badChar = cleaned.match(/[^A-Za-z0-9+/=]/);
-        if (badChar) {
-          throw new Error(t('base64.err_bad_char', { char: badChar[0] }));
-        }
-        throw new Error(t('base64.err_invalid'));
-      }
-
-      // 检查 = 号位置：只能出现在末尾
-      if (/=(?!=*$)/.test(cleaned)) {
-        throw new Error(t('base64.err_padding'));
-      }
-
-      // 检查长度：Base64 长度必须是 4 的倍数
-      if (cleaned.length % 4 !== 0) {
-        throw new Error(t('base64.err_length', { len: cleaned.length }));
-      }
-
+    function decodeURL(str) {
       try {
-        var binary = atob(cleaned);
-        var bytes = new Uint8Array(binary.length);
-        for (var j = 0; j < binary.length; j++) {
-          bytes[j] = binary.charCodeAt(j);
-        }
-        var decoded = new TextDecoder('utf-8').decode(bytes);
-        return decoded;
+        return decodeURIComponent(str);
       } catch (e) {
-        throw new Error(t('base64.err_decode'));
+        if (e instanceof URIError) {
+          throw new Error(t('url.err_decode'));
+        }
+        throw new Error(t('url.status_decode_fail') + ': ' + e.message);
       }
     }
 
@@ -270,22 +233,15 @@
     function doEncode() {
       var input = inputArea.value;
       if (!input) {
-        showStatus('warning', t('base64.status_empty_input'));
+        showStatus('warning', t('url.status_empty_input'));
         return;
       }
 
-      try {
-        var result = encodeBase64(input);
-        outputArea.value = result;
-        outputLabel.innerHTML = '<span class="text-success">' + t('base64.status_encode_ok') + '</span>';
-        updateOutputStats(result);
-        showStatus('success', t('base64.msg_encode_ok'));
-      } catch (e) {
-        outputArea.value = '';
-        outputLabel.innerHTML = '<span class="text-error">' + t('base64.status_encode_fail') + '</span>';
-        updateOutputStats('');
-        showStatus('error', t('base64.status_encode_fail') + ': ' + e.message);
-      }
+      var result = encodeURL(input);
+      outputArea.value = result;
+      outputLabel.innerHTML = '<span class="text-success">' + t('url.status_encode_ok') + '</span>';
+      updateOutputStats(result);
+      showStatus('success', t('url.msg_encode_ok'));
     }
 
     // ============================================================
@@ -294,19 +250,19 @@
     function doDecode() {
       var input = inputArea.value.trim();
       if (!input) {
-        showStatus('warning', t('base64.status_empty_decode'));
+        showStatus('warning', t('url.status_empty_decode'));
         return;
       }
 
       try {
-        var result = decodeBase64(input);
+        var result = decodeURL(input);
         outputArea.value = result;
-        outputLabel.innerHTML = '<span class="text-success">' + t('base64.status_decode_ok') + '</span>';
+        outputLabel.innerHTML = '<span class="text-success">' + t('url.status_decode_ok') + '</span>';
         updateOutputStats(result);
-        showStatus('success', t('base64.msg_decode_ok'));
+        showStatus('success', t('url.msg_decode_ok'));
       } catch (e) {
         outputArea.value = '';
-        outputLabel.innerHTML = '<span class="text-error">' + t('base64.status_decode_fail') + '</span>';
+        outputLabel.innerHTML = '<span class="text-error">' + t('url.status_decode_fail') + '</span>';
         updateOutputStats('');
         showStatus('error', e.message);
       }
@@ -320,17 +276,17 @@
       var outputVal = outputArea.value;
 
       if (!outputVal) {
-        showStatus('warning', t('base64.status_empty_swap'));
+        showStatus('warning', t('url.status_empty_swap'));
         return;
       }
 
       inputArea.value = outputVal;
       outputArea.value = '';
-      outputLabel.innerHTML = '<span class="text-text-muted">' + t('base64.status_swapped') + '</span>';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + t('url.status_swapped') + '</span>';
       updateInputStats();
       updateOutputStats('');
       saveInput(outputVal);
-      showStatus('info', t('base64.msg_swap_ok'));
+      showStatus('info', t('url.msg_swap_ok'));
       setActiveButton(btnEncode, btnDecode);
     }
 
@@ -340,11 +296,11 @@
     function doClear() {
       inputArea.value = '';
       outputArea.value = '';
-      outputLabel.innerHTML = '<span class="text-text-muted">' + t('base64.status_waiting') + '</span>';
+      outputLabel.innerHTML = '<span class="text-text-muted">' + t('url.status_waiting') + '</span>';
       updateInputStats();
       updateOutputStats('');
       saveInput('');
-      showStatus('info', t('base64.msg_cleared'));
+      showStatus('info', t('url.msg_cleared'));
       setActiveButton(btnEncode, btnDecode);
     }
 
@@ -354,19 +310,19 @@
     function doCopy() {
       var outputVal = outputArea.value;
       if (!outputVal) {
-        showStatus('warning', t('base64.msg_empty_output'));
+        showStatus('warning', t('url.msg_empty_output'));
         return;
       }
 
       var done = function () {
         var originalText = btnCopy.textContent;
-        btnCopy.textContent = t('base64.copy_done');
+        btnCopy.textContent = t('url.copy_done');
         btnCopy.classList.add('text-[#00B42A]', 'border-[#00B42A]');
         setTimeout(function () {
           btnCopy.textContent = originalText;
           btnCopy.classList.remove('text-[#00B42A]', 'border-[#00B42A]');
         }, 1200);
-        showStatus('success', t('base64.msg_copied'));
+        showStatus('success', t('url.msg_copied'));
       };
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -425,17 +381,6 @@
     }
 
     // ============================================================
-    // 工具函数
-    // ============================================================
-    function escapeHTML(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    // ============================================================
     // 按钮切换
     // ============================================================
     function setActiveButton(activeBtn, inactiveBtn) {
@@ -448,11 +393,22 @@
     }
 
     // ============================================================
+    // 工具函数
+    // ============================================================
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ============================================================
     // 事件绑定
     // ============================================================
     function init() {
       // 初始化状态缓存
-      lastStatusMsg = t('base64.status_placeholder');
+      lastStatusMsg = t('url.status_placeholder');
 
       loadInput();
 

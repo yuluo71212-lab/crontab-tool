@@ -931,18 +931,28 @@
 
   /** 初始化 */
   function init() {
-    // 读取保存的语言偏好
-    try {
-      var saved = localStorage.getItem(LANG_KEY);
-      if (saved === 'en' || saved === 'zh') {
-        currentLang = saved;
-      }
-    } catch (e) {}
+    // 检查是否强制指定语言（用于独立中/英文 SEO 页面）
+    var forcedLang = document.documentElement.getAttribute('data-force-lang');
+    if (forcedLang === 'en' || forcedLang === 'zh') {
+      currentLang = forcedLang;
+    } else {
+      // 读取保存的语言偏好
+      try {
+        var saved = localStorage.getItem(LANG_KEY);
+        if (saved === 'en' || saved === 'zh') {
+          currentLang = saved;
+        }
+      } catch (e) {}
+    }
 
     // 应用初始语言
     document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh-CN';
     applyTranslations();
-    initLangToggle();
+
+    // 仅在非强制语言模式下初始化切换按钮（强制模式使用页面跳转）
+    if (!forcedLang) {
+      initLangToggle();
+    }
 
     // 暴露到全局
     window.setLanguage = setLanguage;
