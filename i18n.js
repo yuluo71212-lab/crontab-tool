@@ -948,6 +948,67 @@
     window.setLanguage = setLanguage;
     window.t = t;
     window.getCurrentLang = function () { return currentLang; };
+
+    // ============================================================
+    // Toast 通知系统
+    // ============================================================
+    var toastContainer = null;
+
+    function getToastContainer() {
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        document.body.appendChild(toastContainer);
+      }
+      return toastContainer;
+    }
+
+    /**
+     * 显示轻量 Toast 通知，2 秒后自动消失
+     * @param {string} message - 提示文本
+     * @param {string} type - 'success' | 'error' | 'warning' | 'info'
+     */
+    function showToast(message, type) {
+      type = type || 'info';
+      var icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+      var cls = 'toast-' + (type === 'error' ? 'error' : type === 'warning' ? 'warning' :
+                            type === 'success' ? 'success' : 'info');
+
+      var item = document.createElement('div');
+      item.className = 'toast-item ' + cls;
+      item.innerHTML = '<span class="toast-icon">' + (icons[type] || icons.info) + '</span>' +
+                       '<span>' + message + '</span>';
+
+      getToastContainer().appendChild(item);
+
+      // 2 秒后移除（animation toastOut 在 1.7s 触发，再等 0.3s 完成）
+      setTimeout(function () {
+        if (item.parentNode) {
+          item.parentNode.removeChild(item);
+        }
+      }, 2100);
+    }
+
+    window.showToast = showToast;
+
+    // ============================================================
+    // 全局键盘快捷键：Ctrl+S 复制结果
+    // 在所有工具页中，Ctrl+S 会触发「复制结果」按钮点击
+    // ============================================================
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        // 仅在用户聚焦在输入区域时触发（防止与浏览器保存页面冲突）
+        var activeEl = document.activeElement;
+        if (activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT')) {
+          e.preventDefault();
+          // 尝试查找页面中的复制按钮
+          var copyBtn = document.getElementById('btn-copy');
+          if (copyBtn) {
+            copyBtn.click();
+          }
+        }
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

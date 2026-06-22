@@ -17,10 +17,12 @@
           colors: {
             primary:  '#165DFF',
             'primary-hover': '#1452E5',
-            'bg-page': '#F7F8FA',
+            'bg-page': '#f8fafc',
             'text-main': '#1D2129',
             'text-secondary': '#4E5969',
             'text-muted': '#86909C',
+            'success': '#00B42A',
+            'error':   '#F53F3F',
           },
           borderRadius: {
             'card': '8px',
@@ -34,14 +36,13 @@
     }
   </script>
 
-  <style>
-    .transition-btn { transition: all 0.2s ease; }
-  </style>
+  <!-- CronBox 共享样式 -->
+  <link rel="stylesheet" href="../common.css">
 </head>
 <body class="bg-bg-page min-h-screen flex flex-col text-text-main">
 
   <!-- ========== 顶部导航 ========== -->
-  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-100 sticky top-0 z-50">
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
       <a href="../index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
@@ -72,7 +73,7 @@
           <p data-i18n="contact.feedback_p1">我们非常重视您的意见！如果您在使用过程中遇到任何问题，或有功能改进建议，欢迎通过以下方式与我们联系。</p>
         </div>
 
-        <div class="bg-gray-50 rounded-btn p-4 border border-gray-200">
+        <div class="bg-gray-50 rounded-card p-4 border border-gray-100">
           <h2 class="text-base font-semibold text-text-main mb-2" data-i18n="contact.info_title">联系方式</h2>
           <p class="text-base">
             <strong class="text-text-main" data-i18n="contact.email_label">电子邮箱：</strong>
@@ -103,11 +104,11 @@
   </main>
 
   <!-- ========== 底部页脚 ========== -->
-  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-100">
     <div class="flex justify-center gap-6 mb-3">
       <a href="about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
       <a href="privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>
-      <a href="contact.html" class="text-primary font-medium no-underline hover:text-primary transition-btn" data-i18n="footer.contact">联系我们</a>
+      <a href="contact.html" class="text-primary font-medium no-underline hover:text-primary-hover transition-btn" data-i18n="footer.contact">联系我们</a>
     </div>
     <p class="text-text-muted" data-i18n="footer.copyright">&copy; 2026 CronBox 免费在线工具</p>
   </footer>

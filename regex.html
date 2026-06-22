@@ -15,7 +15,7 @@
         extend: {
           colors: {
             primary:  '#165DFF', 'primary-hover': '#1452E5',
-            'bg-page': '#F7F8FA', 'text-main': '#1D2129',
+            'bg-page': '#f8fafc', 'text-main': '#1D2129',
             'text-secondary': '#4E5969', 'text-muted': '#86909C',
             'success': '#00B42A', 'error': '#F53F3F',
           },
@@ -49,10 +49,12 @@
     .template-chip { transition: all 0.15s ease; cursor: pointer; }
     .template-chip:hover { background: #E8F3FF; border-color: #165DFF; }
   </style>
+  <!-- CronBox 共享样式 -->
+  <link rel="stylesheet" href="common.css">
 </head>
 <body class="bg-bg-page min-h-screen flex flex-col text-text-main">
 
-  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-200 sticky top-0 z-50">
+  <header id="site-header" class="bg-white border-0 border-b border-solid border-gray-100 sticky top-0 z-50">
     <nav class="max-w-[1200px] mx-auto flex justify-between items-center px-4 py-3">
       <a href="index.html" class="text-lg font-semibold text-text-main no-underline hover:text-primary transition-btn">CronBox</a>
       <div class="flex gap-2 text-sm items-center">
@@ -173,7 +175,7 @@
 
   </main>
 
-  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-200">
+  <footer id="site-footer" class="text-center py-6 text-sm border-0 border-t border-solid border-gray-100">
     <div class="flex justify-center gap-6 mb-3">
       <a href="pages/about.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.about">关于我们</a>
       <a href="pages/privacy.html" class="text-text-muted no-underline hover:text-primary transition-btn" data-i18n="footer.privacy">隐私政策</a>

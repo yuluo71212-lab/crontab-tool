@@ -1,0 +1,137 @@
+/* ============================================================
+   CronBox 共享样式 — 全站视觉与交互统一
+   所有页面通过 <link rel="stylesheet" href="common.css"> 引入
+   （pages/ 子目录页面使用 href="../common.css"）
+   ============================================================ */
+
+/* ── 全局过渡（所有可交互元素） ── */
+.transition-btn {
+  transition: all 0.2s ease;
+}
+
+/* ── 按钮点击缩放反馈 ── */
+button:active {
+  transform: scale(0.97);
+}
+
+/* ── 顶部导航毛玻璃效果 ── */
+#site-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ── 聚焦外发光（输入框/文本域统一） ── */
+textarea:focus,
+input[type="text"]:focus,
+input[type="search"]:focus,
+input[type="email"]:focus {
+  outline: none;
+  border-color: #165DFF;
+  box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.15);
+}
+
+/* ── 统一滚动条样式 ── */
+textarea::-webkit-scrollbar,
+pre::-webkit-scrollbar,
+#output-area::-webkit-scrollbar,
+#diff-output::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+textarea::-webkit-scrollbar-thumb,
+pre::-webkit-scrollbar-thumb,
+#output-area::-webkit-scrollbar-thumb,
+#diff-output::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+textarea::-webkit-scrollbar-track,
+pre::-webkit-scrollbar-track,
+#output-area::-webkit-scrollbar-track,
+#diff-output::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ── Toast 通知容器 ── */
+#toast-container {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+/* ── 单条 Toast ── */
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 360px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 1.7s forwards;
+  word-break: break-word;
+}
+
+/* Toast 颜色变体 */
+.toast-success {
+  background: #E8F8EF;
+  color: #007A32;
+  border: 1px solid #B7EBCF;
+}
+.toast-error {
+  background: #FEF0F0;
+  color: #C03221;
+  border: 1px solid #FDD0CB;
+}
+.toast-warning {
+  background: #FFF7E6;
+  color: #B0530A;
+  border: 1px solid #FFE0A3;
+}
+.toast-info {
+  background: #E8F0FE;
+  color: #1A56DB;
+  border: 1px solid #B8D4FE;
+}
+
+/* Toast 图标 */
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Toast 动画 */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+}
